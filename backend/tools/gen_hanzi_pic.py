@@ -25,7 +25,6 @@ def generate_hanzi_image(hanzi, font_path, output_path="output.png", size=200, b
             img = Image.new("RGBA", (size, size), (0, 0, 0, 0))  # 透明背景
         else:
             img = Image.new("RGB", (size, size), bg_color)  # 白色背景
-            output_path = output_path.replace('.png', '.jpg')
         draw = ImageDraw.Draw(img)
         
         # 加载字体（自动调整字体大小）
@@ -76,5 +75,5 @@ if __name__ == "__main__":
             os.makedirs(f'data/hanzi_pic/{font}')   
         # for zi in list(hanzi.keys()):
         zi = '道'
-        generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.png', size=720, text_color="black", transparent=False)
+        generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.jpg', size=720, text_color='rgb(10,10,10)', transparent=False)
         generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.png', size=720, text_color="black", transparent=True)
