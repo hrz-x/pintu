@@ -40,9 +40,6 @@ def generate_hanzi_image(hanzi, font_path, output_path="output.png", size=200, b
         # 绘制文字
         draw.text(position, hanzi, fill=text_color, font=font)
         
-        # 绘制文字
-        draw.text(position, hanzi, fill=text_color, font=font)
-        
         # 保存图片
         img.save(output_path)
         print(f"图片已生成: {os.path.abspath(output_path)}")
@@ -58,14 +55,15 @@ def generate_hanzi_image(hanzi, font_path, output_path="output.png", size=200, b
 # 示例使用
 if __name__ == "__main__":
     
+    fronts_dir = './data/fronts'
     fronts = {
-        '行楷': 'C:/Windows/Fonts/STXINGKA.TTF',
-        '宋体': 'C:/Windows/Fonts/simsun.ttc',
-        '黑体': 'C:/Windows/Fonts/simhei.ttf',
-        '楷体': 'C:/Windows/Fonts/simkai.ttf',
-        '仿宋': 'C:/Windows/Fonts/simfang.ttf',
-        '隶书': 'C:/Windows/Fonts/simli.ttf',
-        '华文彩云': 'C:/Windows/Fonts/STCAIYUN.TTF',
+        '行楷': f'{fronts_dir}/STXINGKA.TTF',
+        '宋体': f'{fronts_dir}/simsun.ttc',
+        '黑体': f'{fronts_dir}/simhei.ttf',
+        '楷体': f'{fronts_dir}/simkai.ttf',
+        '仿宋': f'{fronts_dir}/simfang.ttf',
+        '隶书': f'{fronts_dir}/simli.ttf',
+        '华文彩云': f'{fronts_dir}/STCAIYUN.TTF',
     }
 
     hanzi = json.load(open('data/hanzi.json', 'r', encoding='utf-8'))
@@ -74,6 +72,7 @@ if __name__ == "__main__":
         if not os.path.exists(f'data/hanzi_pic/{font}'):
             os.makedirs(f'data/hanzi_pic/{font}')   
         # for zi in list(hanzi.keys()):
-        zi = '道'
-        generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.jpg', size=720, text_color='rgb(10,10,10)', transparent=False)
+        zi = '雨'
+        generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.jpg', size=720, text_color="black", transparent=False)
         generate_hanzi_image(zi, font_file, f'data/hanzi_pic/{font}/{zi}.png', size=720, text_color="black", transparent=True)
+
