@@ -21,6 +21,10 @@ def hanzi_pic(filename):
 def hanzi_splited(filename):
     return send_from_directory(pintu_dir + '/data/hanzi_splited/', filename)
 
+@app.route('/hanzi_video/<filename>')
+def hanzi_video(filename):
+    return send_from_directory(pintu_dir + '/data/hanzi_video/', filename)
+
 @app.route('/data/<filename>')
 def data(filename):
     return send_from_directory(pintu_dir + '/data/', filename)

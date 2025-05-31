@@ -93,6 +93,20 @@ from PIL import Image
 import os
 from typing import List, Optional
 
+def convert_to_browser_friendly(input_path, output_path):
+    import subprocess
+    cmd = [
+        'ffmpeg',
+        '-i', input_path,
+        '-c:v', 'libx264',
+        '-profile:v', 'main',
+        '-pix_fmt', 'yuv420p',
+        '-movflags', '+faststart',
+        '-crf', '23',
+        output_path
+    ]
+    subprocess.run(cmd, check=True)
+
 def create_fade_video(
     img_urls: List[str],
     output_path: str = "output_video.mp4",
@@ -164,11 +178,16 @@ def create_fade_video(
         transition_frames = int(fps * transition_seconds)
         
         # 3. 创建视频写入器
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v') # type: ignore
-        video = cv2.VideoWriter(output_path, fourcc, fps, base_size) # type: ignore
+        # 修改视频写入部分
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')  # 改为 H.264 编码
+        video = cv2.VideoWriter(output_path, fourcc, fps, base_size)
         
         if not video.isOpened():
-            raise RuntimeError("无法创建视频文件，请检查输出路径和编码器")
+            # 如果 H.264 不可用，尝试其他编码
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            video = cv2.VideoWriter(output_path, fourcc, fps, base_size)
+            if not video.isOpened():
+                raise RuntimeError("无法创建视频文件，请检查输出路径和编码器")
         
         # 4. 生成视频内容
         print("正在生成视频...")
@@ -187,7 +206,14 @@ def create_fade_video(
         # 6. 验证输出文件
         if not os.path.exists(output_path):
             raise RuntimeError("视频文件生成失败")
+                # 如果使用 mp4v 编码，可以添加后续转换步骤
+        if fourcc == cv2.VideoWriter_fourcc(*'mp4v'):
+            temp_path = output_path.replace('.mp4', '_temp.mp4')
+            os.rename(output_path, temp_path)
+            convert_to_browser_friendly(temp_path, output_path)
+            os.remove(temp_path)
         
+        return output_path
         print(f"视频生成成功: {os.path.abspath(output_path)}")
         return output_path
         
@@ -202,14 +228,14 @@ def gen_hanzi_video(zi: str, font: str = '仿宋'):
     pic_describe = qa(prompt_v2.format(zi=zi, font=font))
     img_url = f'http://101.43.128.24:8000/hanzi_pic/{font}/{zi}_outline.jpg'
     urls = [img_url]
-    for step in range(10):
+    for step in range(3):
         img_url = wanx_t2i(pic_describe=pic_describe, img_url=img_url)
         if not img_url:
             break
         urls.append(img_url)
         print(f"第{step+1}步生成的图片：{img_url}")
         
-    # IPython.embed()
+    IPython.embed()
     if len(urls) < 2:
         print("生成的图片数量不足，无法创建视频")
         return
@@ -228,4 +254,4 @@ if __name__ == '__main__':
     # pic_describe = qa(prompt.format(zi='雨', font='仿宋'))
     # wanx_i2v(pic_describe=pic_describe, img_url='http://101.43.128.24:8000/hanzi_pic/仿宋/雨_outline.jpg')
 
-    gen_hanzi_video(zi='火', font='行楷')
+    gen_hanzi_video(zi='鸟', font='黑体')

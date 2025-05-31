@@ -12,9 +12,23 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
+        .top-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* background-color: #f8f8f8; */
+            color: #333;
+            /* padding: 10px; */
+            text-align: center;
+            /* border-bottom: 1px solid #ddd; */
+            z-index: 9999; /* 确保在最上层 */
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+        }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            margin-top: 50px; /* 为固定条留出空间，防止内容被遮挡 */
+            /* background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); */
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -26,23 +40,23 @@
         .container {
             max-width: 900px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.0);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.0);
         }
         
         header {
             padding: 25px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.0);
             text-align: center;
         }
         
         h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.0);
         }
         
         .subtitle {
@@ -62,7 +76,8 @@
         .target-area {
             flex: 1;
             min-width: 300px;
-            background: rgba(0, 0, 0, 0.15);
+            /* background: rgba(0, 0, 0, 0.15); */
+            /* border: 2px dashed rgba(0, 0, 0, 0.4); */
             border-radius: 15px;
             padding: 20px;
             display: flex;
@@ -78,7 +93,7 @@
         
         .puzzle-target {
             flex: 1;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.0);
             border-radius: 10px;
             position: relative;
             height: 400px;
@@ -86,13 +101,13 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+            /* box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3); */
         }
         
         .puzzle-pieces {
             flex: 1;
-            min-width: 300px;
-            background: rgba(0, 0, 0, 0.15);
+            /* width: 200px; */
+            /* background: rgba(0, 0, 0, 0.15); */
             border-radius: 15px;
             padding: 20px;
             display: flex;
@@ -110,13 +125,14 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            /* width: 200px; */
             gap: 20px;
             justify-content: center;
         }
         
         .puzzle-piece {
             height: 100px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.0);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -125,12 +141,16 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.0);
+            
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
         }
         
         .puzzle-piece:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.0);
             background: rgba(255, 255, 255, 0.25);
         }
         
@@ -157,6 +177,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 5px;
             flex-shrink: 0;
+            
         }
         
         .piece-info {
@@ -177,7 +198,8 @@
         
         .target-slot {
             position: absolute;
-            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border: 2px dashed rgba(0, 0, 0, 0.4);
+            /* border: 2px dashed rgba(255, 255, 255, 0.4); */
             border-radius: 5px;
             transition: all 0.3s ease;
             display: flex;
@@ -345,7 +367,7 @@
             }
             
             .target-area, .puzzle-pieces {
-                min-width: 100%;
+                /* min-width: 100%; */
             }
         }
         
@@ -356,29 +378,70 @@
             font-size: 0.8rem;
             opacity: 0.7;
         }
+    /* 容器需要相对定位 */
+    .video-bg-container {
+      position: relative;
+      width: 360px;
+      height: 360px;
+      overflow: hidden;
+      border: 2px dashed #333;
+    }
+    
+    /* 视频设置为绝对定位，作为背景 */
+    .video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 99;
+    }
+    
+    /* 内容放在视频上方 */
+    .content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      padding: 20px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+
     </style>
 </head>
-<body>
-    <div class="container">
+<body style="background-image: url('/data/bg.jpg')">
 
+    <div class="top-banner" id="banner"></div>
+    <div class="container">
         
         <div class="game-area">
-            <div class="target-area">
-                <div class="target-title">目标区域</div>
-                <div class="puzzle-target" id="puzzle-target">
-                    <!-- 目标位置将由JS动态生成 -->
-                </div>
-            </div>
-            
             <div class="puzzle-pieces">
-                <div class="pieces-title">拼图部件</div>
+                <!-- <div class="pieces-title">拼图部件</div> -->
                 <div class="pieces-container" id="pieces-container">
                     <!-- 拼图块将由JS动态生成 -->
                 </div>
             </div>
+
+            <div class="target-area">
+                <!-- <div class="target-title">目标区域</div> -->
+                <div class="video-bg-container">
+                    <!-- 视频背景 -->
+                    <video class="video-bg" muted id="bgVideo"  style="display: none;">
+                    <source src="/hanzi_video/鸟_黑体_video.mp4" type="video/mp4">
+                    您的浏览器不支持HTML5视频
+                    </video>
+                    
+                    <!-- 内容 -->
+                <div class="puzzle-target" id="puzzle-target" class="content">
+                    <!-- 目标位置将由JS动态生成 -->
+                </div>    
+                </div>         
+            </div>
+
+            
         </div>
         
-        <div class="stats">
+        <div class="stats"  style="display: none;">
             <div class="stat-item">
                 完成进度
                 <div class="stat-value"><span id="completed-count">0</span>/3</div>
@@ -393,7 +456,7 @@
             </div>
         </div>
         
-        <div class="controls">
+        <div class="controls"  style="display: none;">
 
             <button id="btn-reset" class="btn-reset">
                 <i class="fas fa-redo"></i> 重新开始
@@ -404,7 +467,7 @@
         </div>
     </div>
     
-    <div class="completed-overlay" id="completed-overlay">
+    <div class="completed-overlay" id="completed-overlay" style="display: none;">
         <div class="completed-content">
             <h2>恭喜过关! <i class="fas fa-trophy"></i></h2>
             <p>用时 <span id="final-time">0</span> 秒，移动了 <span id="final-moves">0</span> 次</p>
@@ -430,6 +493,7 @@
             const timerDisplay = document.getElementById('timer');
             const finalTime = document.getElementById('final-time');
             const finalMoves = document.getElementById('final-moves');
+            const video = document.getElementById('bgVideo');
             
             // 游戏状态
             let gameState = {
@@ -446,6 +510,8 @@
             let gameData = null;
             let font = '';
             let zi = '';
+
+            const hanzi = await fetch('/data/hanzi.json').then(res => res.json());
 
             // 初始化游戏
             async function initGame() {
@@ -468,6 +534,8 @@
                 existingSlots.forEach(slot => slot.remove());
                 const existingPieces = document.querySelectorAll('.puzzle-piece');
                 existingPieces.forEach(piece => piece.remove());
+                bgVideo.style.display = 'none'; // 显示视频背景
+
 
                 
                 // 停止之前的计时器
@@ -486,6 +554,11 @@
 
                 gameData = await fetch(`/hanzi_splited/${font}/${zi}/components_info.json`).then(res => res.json());
                 console.log(candidates, font, zi, gameData);
+
+                document.getElementById('banner').innerHTML = `${font} | `
+                for (const lang in hanzi[zi]) {
+                    document.getElementById('banner').innerHTML += ` ${lang}: ${hanzi[zi][lang]} |`
+                }
 
                 // 创建目标位置
                 gameData.components.forEach((component, index) => {
@@ -515,11 +588,7 @@
                     
                     // 添加内容
                     piece.innerHTML = `
-                        <div class="piece-label">${index + 1}</div>
                         <div class="piece-preview" style="background-image: url('/hanzi_splited/${font}/${zi}/${component.filename}')"></div>
-                        <div class="piece-info">
-                            <div class="piece-title">部件 ${index + 1}</div>
-                        </div>
                     `;
                     
                     piecesContainer.appendChild(piece);
@@ -660,6 +729,13 @@
                     finalTime.textContent = gameState.elapsedTime;
                     finalMoves.textContent = gameState.moves;
                     completedOverlay.classList.add('show');
+                    bgVideo.style.display = 'block'; // 显示视频背景
+                    video.currentTime = 0;  // 将播放位置重置到开始
+                    video.play(); 
+                    setTimeout(() => {
+                        initGame();
+                    }, 8000); 
+                    
                 }, 1000);
             }
 
