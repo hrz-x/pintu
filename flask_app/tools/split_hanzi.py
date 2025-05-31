@@ -11,6 +11,9 @@ import numpy as np
 from PIL import Image
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, binary_dilation, disk
+from tqdm import tqdm
+
+from gen_hanzi_pic import fonts, hanzi
 
 def extract_connected_components(input_path, output_folder, erosion_radius=5, dilation_radius=None):
     """
@@ -133,14 +136,20 @@ def extract_connected_components(input_path, output_folder, erosion_radius=5, di
         print(f"无法保存JSON文件: {e}")
         return None
     
-    print(f"提取完成，共找到 {component_index} 个连通区域")
-    print(f"形态学参数: 腐蚀半径={erosion_radius}, 膨胀半径={dilation_radius}")
+    # print(f"提取完成，共找到 {component_index} 个连通区域")
+    # print(f"形态学参数: 腐蚀半径={erosion_radius}, 膨胀半径={dilation_radius}")
     return result_data
 
 # 使用示例
 if __name__ == "__main__":
-    input_image = "/home/ubuntu/pintu/data/hanzi_pic/仿宋/雨.png"  # 替换为你的输入图片路径
-    output_dir = "/home/ubuntu/pintu/data/hanzi_splited/仿宋/雨"  # 输出文件夹
-    
-    extract_connected_components(input_image, output_dir)
-    print(f"处理完成，结果已保存到 {output_dir} 文件夹")
+
+    candidates = []
+    for font, font_file in fonts.items():
+        for zi in tqdm(hanzi.keys()):
+            input_image = f"./data/hanzi_pic/{font}/{zi}.png"  # 替换为你的输入图片路径
+            output_dir = f"./data/hanzi_splited/{font}/{zi}"  # 输出文件夹
+            
+            result = extract_connected_components(input_image, output_dir)
+            candidates.append((font, zi, len(result['components']) if result else 0))
+
+    json.dump(candidates, open('./data/candidates.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)

@@ -146,21 +146,21 @@ def generate_outline(input_pic: str, output_pic: str,
         print(f"生成失败: {e}")
         return False
     
+fonts_dir = './data/fonts'
+fonts = {
+    '行楷': f'{fonts_dir}/STXINGKA.TTF',
+    '宋体': f'{fonts_dir}/SIMSUN.TTC',
+    '黑体': f'{fonts_dir}/SIMHEI.TTF',
+    '楷体': f'{fonts_dir}/SIMKAI.TTF',
+    '仿宋': f'{fonts_dir}/SIMFANG.TTF',
+    '隶书': f'{fonts_dir}/SIMLI.TTF',
+    # '华文彩云': f'{fronts_dir}/STCAIYUN.TTF',
+}    
+hanzi = json.load(open('data/hanzi.json', 'r', encoding='utf-8'))
+
 # 示例使用
 if __name__ == "__main__":
     
-    fonts_dir = './data/fonts'
-    fonts = {
-        '行楷': f'{fonts_dir}/STXINGKA.TTF',
-        '宋体': f'{fonts_dir}/SIMSUN.TTC',
-        '黑体': f'{fonts_dir}/SIMHEI.TTF',
-        '楷体': f'{fonts_dir}/SIMKAI.TTF',
-        '仿宋': f'{fonts_dir}/SIMFANG.TTF',
-        '隶书': f'{fonts_dir}/SIMLI.TTF',
-        # '华文彩云': f'{fronts_dir}/STCAIYUN.TTF',
-    }
-
-    hanzi = json.load(open('data/hanzi.json', 'r', encoding='utf-8'))
 
     for font, font_file in fonts.items():
         if not os.path.exists(f'data/hanzi_pic/{font}'):
