@@ -443,10 +443,11 @@
                 elapsedTime: 0
             };
 
-            const candidates = await fetch('/data/candidates.json').then(res => res.json());
+            const candidates = (await fetch('/data/candidates.json').then(res => res.json())).sort(() => Math.random() - 0.5);
             let gameData = null;
             let font = '';
             let zi = '';
+            let idx = 0;
 
             // 初始化游戏
             async function initGame() {
@@ -481,7 +482,7 @@
                 gameState.timerInterval = setInterval(updateTimer, 1000);
                 
                 // 获取文字数据
-                let randomItem = candidates[Math.floor(Math.random() * candidates.length)];
+                let randomItem = candidates[(idx++) % candidates.length];
                 font = randomItem[0];
                 zi = randomItem[1];
 
