@@ -397,7 +397,7 @@
         width: 360px;
         height: 360px;
         overflow: hidden;
-        border: 2px dashed #333;
+        border: 2px dashed #dedcdc;
         }
         
         /* 视频设置为绝对定位，作为背景 */
@@ -432,12 +432,12 @@
         #fullscreen-btn {
             position: fixed;
             top: 20px;
-            right: 20px;
-            width: 40px;
+            left: 20px;
+            width: 80px;
             height: 40px;
             background-color: rgba(0, 0, 0, 0.1);
             border: none;
-            border-radius: 50%;
+            border-radius: 10%;
             color: white;
             font-size: 20px;
             cursor: pointer;
@@ -473,14 +473,151 @@
             color: #333;
         }
 
+        /* 提示弹窗样式 */
+        .wechat-tip {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .wechat-tip-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wechat-tip h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .wechat-tip p {
+            margin-bottom: 20px;
+        }
+        
+        .wechat-tip-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #07C160;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .wechat-tip-btn:hover {
+            background-color: #06AD56;
+        }
+        
+        .wechat-tip-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        /* 横屏提示样式 */
+        .orientation-tip {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            color: white;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .orientation-tip-content {
+            max-width: 80%;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .orientation-tip h2 {
+            margin-top: 0;
+            color: #fff;
+        }
+        
+        .orientation-tip p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .orientation-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: rotate 2s infinite ease-in-out;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(90deg); }
+        }
+        
+        /* 横屏时隐藏提示 */
+        @media screen and (orientation: landscape) {
+            .orientation-tip {
+                display: none !important;
+            }
+        }
+
     </style>
 </head>
-<body style="background-image: url('/data/bg.jpg')">
+<body  style="
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                      url('/data/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+">
+    <!-- 微信提示弹窗 -->
+    <div id="wechatTip" class="wechat-tip">
+        <div class="wechat-tip-content">
+            <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信" class="wechat-tip-logo">
+            <h2>请在浏览器中打开</h2>
+            <p>检测到您正在使用微信内置浏览器访问，部分功能可能受限。</p>
+            <p>为了获得完整体验，请点击右上角菜单，选择"在浏览器中打开"。</p>
+            <a href="#" id="closeTip" class="wechat-tip-btn">我知道了</a>
+        </div>
+    </div>
+    <!-- 横屏提示 -->
+    <div id="orientationTip" class="orientation-tip">
+        <div class="orientation-tip-content">
+            <div class="orientation-icon">🔄</div>
+            <h2>请横屏浏览</h2>
+            <p>检测到您正在使用竖屏模式，部分内容可能无法完整显示。</p>
+            <p>为了获得最佳体验，请将设备旋转至横屏模式。</p>
+        </div>
+    </div>
 
     <div class="top-banner" id="banner"></div>
     <div class="help" >拖动左侧拼图至右侧区域来组成汉字<br>Drag the puzzle pieces on the left to the right area to form Chinese characters</div>
     <!-- 全屏按钮 -->
-    <button id="fullscreen-btn" title="切换全屏">⛶</button>
+    <button id="fullscreen-btn" title="切换全屏">⛶ 全屏</button>
     
     <div class="container">
         
@@ -551,6 +688,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
 
+            document.querySelector('.help').style.display = 'block';
             setTimeout(() => {
                 document.querySelector('.help').style.display = 'none';
             }, 5000);
@@ -845,7 +983,7 @@
                     element.msRequestFullscreen();
                 }
                 
-                fullscreenBtn.innerHTML = '⛶'; // 全屏图标
+                fullscreenBtn.innerHTML = '⛶ 全屏'; // 全屏图标
                 fullscreenBtn.setAttribute('title', '退出全屏');
             } else {
                 // 退出全屏
@@ -876,9 +1014,88 @@
                 fullscreenBtn.innerHTML = '⛶';
                 fullscreenBtn.setAttribute('title', '退出全屏');
             } else {
-                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.innerHTML = '⛶ 全屏';
                 fullscreenBtn.setAttribute('title', '进入全屏');
             }
+        }
+
+                // 检测微信内置浏览器
+        function isWeChatBrowser() {
+            // 通过userAgent检测
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.indexOf('micromessenger') !== -1;
+        }
+        
+        // 显示提示
+        function showWeChatTip() {
+            var tip = document.getElementById('wechatTip');
+            tip.style.display = 'block';
+        }
+        
+        // 关闭提示
+        document.getElementById('closeTip').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('wechatTip').style.display = 'none';
+        });
+        
+        // 页面加载时检测
+        window.onload = function() {
+            if (isWeChatBrowser()) {
+                showWeChatTip();
+            }
+        };
+        
+        // 或者DOM加载完成后立即检测
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isWeChatBrowser()) {
+                showWeChatTip();
+            }
+        });
+
+        // 检测屏幕方向
+        function checkOrientation() {
+            const tip = document.getElementById('orientationTip');
+            
+            // 方法1: 使用CSS媒体查询检测
+            const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+            
+            // 方法2: 使用window.orientation或screen.orientation (更可靠)
+            let isPortraitAlt = true;
+            if (window.orientation !== undefined) {
+                // iOS设备
+                isPortraitAlt = Math.abs(window.orientation) !== 90;
+            } else if (screen.orientation !== undefined) {
+                // 现代浏览器
+                isPortraitAlt = screen.orientation.type.includes('portrait');
+            }
+            
+            // 如果检测到竖屏，显示提示
+            if (isPortrait && isPortraitAlt) {
+                tip.style.display = 'flex';
+            } else {
+                tip.style.display = 'none';
+            }
+
+            
+            document.querySelector('.help').style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('.help').style.display = 'none';
+            }, 5000);
+
+        }
+        
+        // 初始检测
+        checkOrientation();
+        
+        // 添加方向变化监听
+        window.addEventListener('orientationchange', checkOrientation);
+        
+        // 某些设备可能需要resize事件
+        window.addEventListener('resize', checkOrientation);
+        
+        // 兼容性处理
+        if (screen.orientation) {
+            screen.orientation.addEventListener('change', checkOrientation);
         }
 
     </script>
