@@ -176,4 +176,5 @@ cython_debug/
 .vscode/
 
 /data/hanzi_pic
+/data/hanzi_splited
 api.txt
