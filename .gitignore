@@ -177,4 +177,5 @@ cython_debug/
 
 /data/hanzi_pic
 /data/hanzi_splited
+/data/hanzi_video
 api.txt

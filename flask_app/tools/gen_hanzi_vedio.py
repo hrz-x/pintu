@@ -86,6 +86,8 @@ prompt = """你是一个生成提示词的Agent，你的输出会被另外一个
 
 prompt_v2 = "请以“{zi}”字展开一副画像，描述画面内容。"
 
+prompt_v3 = "请以“{zi}”字展开一副画像，描述画面内容，画面主体应当为“{zi}”，增加适当的修饰元素。"
+
 import cv2
 import numpy as np
 import requests

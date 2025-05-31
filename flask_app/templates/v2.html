@@ -24,6 +24,19 @@
             /* border-bottom: 1px solid #ddd; */
             z-index: 9999; /* 确保在最上层 */
             /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+        }        
+        .help {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            /* background-color: #f8f8f8; */
+            color: #333;
+            /* padding: 10px; */
+            text-align: center;
+            /* border-bottom: 1px solid #ddd; */
+            z-index: 9999; /* 确保在最上层 */
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
         }
         
         body {
@@ -143,9 +156,9 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.0);
             
-    display: flex;
-    align-items: center; /* 垂直居中 */
-    justify-content: center; /* 水平居中 */
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
         }
         
         .puzzle-piece:hover {
@@ -174,7 +187,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            /* border: 2px solid rgba(255, 255, 255, 0.3); */
             border-radius: 5px;
             flex-shrink: 0;
             
@@ -412,6 +425,7 @@
 <body style="background-image: url('/data/bg.jpg')">
 
     <div class="top-banner" id="banner"></div>
+    <div class="help" >123</div>
     <div class="container">
         
         <div class="game-area">

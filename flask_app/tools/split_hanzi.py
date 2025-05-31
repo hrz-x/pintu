@@ -7,6 +7,7 @@
 
 import os
 import json
+import random
 import numpy as np
 from PIL import Image
 from skimage.measure import label, regionprops
@@ -140,6 +141,20 @@ def extract_connected_components(input_path, output_folder, erosion_radius=5, di
     # print(f"形态学参数: 腐蚀半径={erosion_radius}, 膨胀半径={dilation_radius}")
     return result_data
 
+def filter():
+    ls = json.load(open('./data/all.json'))
+    ls = [e for e in ls if 6 >= e[2] >= 2]
+    ls = [e for e in ls if e[0] in ['行楷', '楷体']]
+    random.shuffle(ls)
+    res = []
+    for font, zi, num in ls:
+        if zi in [e[1] for e in res]:
+            continue
+        res.append([font, zi, num])
+    res.sort()
+    json.dump(res, open('./data/candidates.json', 'w'), ensure_ascii=False)
+    return res
+
 # 使用示例
 if __name__ == "__main__":
 
@@ -152,5 +167,4 @@ if __name__ == "__main__":
             result = extract_connected_components(input_image, output_dir)
             candidates.append((font, zi, len(result['components']) if result else 0))
 
-    candidates = [e for e in candidates if 5 >= e[2] >= 3] 
-    json.dump(candidates, open('./data/candidates.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)
+    json.dump(candidates, open('./data/all.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)
