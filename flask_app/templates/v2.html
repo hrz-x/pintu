@@ -427,7 +427,7 @@
                 <div class="video-bg-container">
                     <!-- 视频背景 -->
                     <video class="video-bg" muted id="bgVideo"  style="display: none;">
-                    <source src="/hanzi_video/鸟_黑体_video.mp4" type="video/mp4">
+                    <source type="video/mp4">
                     您的浏览器不支持HTML5视频
                     </video>
                     
@@ -506,7 +506,7 @@
                 elapsedTime: 0
             };
 
-            const candidates = await fetch('/data/candidates.json').then(res => res.json());
+            const candidates = await fetch('/data/final.json').then(res => res.json());
             let gameData = null;
             let font = '';
             let zi = '';
@@ -730,6 +730,7 @@
                     finalMoves.textContent = gameState.moves;
                     completedOverlay.classList.add('show');
                     bgVideo.style.display = 'block'; // 显示视频背景
+                    bgVideo.src = `/hanzi_video/${zi}_${font}_video.mp4`;
                     video.currentTime = 0;  // 将播放位置重置到开始
                     video.play(); 
                     setTimeout(() => {

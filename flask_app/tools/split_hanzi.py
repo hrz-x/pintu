@@ -152,4 +152,5 @@ if __name__ == "__main__":
             result = extract_connected_components(input_image, output_dir)
             candidates.append((font, zi, len(result['components']) if result else 0))
 
+    candidates = [e for e in candidates if 5 >= e[2] >= 3] 
     json.dump(candidates, open('./data/candidates.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)

@@ -1,3 +1,4 @@
+import json
 import os
 import IPython
 import dashscope
@@ -179,13 +180,13 @@ def create_fade_video(
         
         # 3. 创建视频写入器
         # 修改视频写入部分
-        fourcc = cv2.VideoWriter_fourcc(*'avc1')  # 改为 H.264 编码
-        video = cv2.VideoWriter(output_path, fourcc, fps, base_size)
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')  # 改为 H.264 编码 # type: ignore
+        video = cv2.VideoWriter(output_path, fourcc, fps, base_size) # type: ignore
         
         if not video.isOpened():
             # 如果 H.264 不可用，尝试其他编码
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            video = cv2.VideoWriter(output_path, fourcc, fps, base_size)
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v') # type: ignore
+            video = cv2.VideoWriter(output_path, fourcc, fps, base_size) # type: ignore
             if not video.isOpened():
                 raise RuntimeError("无法创建视频文件，请检查输出路径和编码器")
         
@@ -207,7 +208,7 @@ def create_fade_video(
         if not os.path.exists(output_path):
             raise RuntimeError("视频文件生成失败")
                 # 如果使用 mp4v 编码，可以添加后续转换步骤
-        if fourcc == cv2.VideoWriter_fourcc(*'mp4v'):
+        if fourcc == cv2.VideoWriter_fourcc(*'mp4v'): # type: ignore
             temp_path = output_path.replace('.mp4', '_temp.mp4')
             os.rename(output_path, temp_path)
             convert_to_browser_friendly(temp_path, output_path)
@@ -228,14 +229,14 @@ def gen_hanzi_video(zi: str, font: str = '仿宋'):
     pic_describe = qa(prompt_v2.format(zi=zi, font=font))
     img_url = f'http://101.43.128.24:8000/hanzi_pic/{font}/{zi}_outline.jpg'
     urls = [img_url]
-    for step in range(3):
+    for step in range(10):
         img_url = wanx_t2i(pic_describe=pic_describe, img_url=img_url)
         if not img_url:
             break
         urls.append(img_url)
         print(f"第{step+1}步生成的图片：{img_url}")
         
-    IPython.embed()
+    # IPython.embed()
     if len(urls) < 2:
         print("生成的图片数量不足，无法创建视频")
         return
@@ -254,4 +255,8 @@ if __name__ == '__main__':
     # pic_describe = qa(prompt.format(zi='雨', font='仿宋'))
     # wanx_i2v(pic_describe=pic_describe, img_url='http://101.43.128.24:8000/hanzi_pic/仿宋/雨_outline.jpg')
 
-    gen_hanzi_video(zi='鸟', font='黑体')
+    for font, zi, _ in json.load(open('./data/final.json')):
+        if os.path.exists(f"./data/hanzi_video/{zi}_{font}_video.mp4"):
+            print(f"视频已存在: {zi}_{font}_video.mp4")
+            continue
+        gen_hanzi_video(zi=zi, font=font)
