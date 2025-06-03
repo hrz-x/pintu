@@ -178,4 +178,7 @@ cython_debug/
 /data/hanzi_pic
 /data/hanzi_splited
 /data/hanzi_video
+
+/chinese-poetry-master
+
 api.txt

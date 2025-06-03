@@ -1,0 +1,17 @@
+{
+    "cp_path": "./",
+    "datasets": {
+        "shuimotangshi": {
+            "name": "水墨唐诗",
+            "id": 10,
+            "path": "水墨唐诗/shuimotangshi.json",
+            "tag": "paragraphs"
+        },
+        "shijing": {
+            "name": "诗经",
+            "id": 13,
+            "path": "诗经/shijing.json",
+            "tag": "content"
+        }
+    }
+}
