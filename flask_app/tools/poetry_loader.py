@@ -3,6 +3,8 @@ import os
 from pprint import pprint
 import random
 
+import IPython
+
 POETRY_DATA_DIR = "./chinese-poetry-master/"
 DATAS_CONFIG = "./data/poetry_manifest.json"
 
@@ -72,9 +74,29 @@ if __name__ == "__main__":
     loader = PlainDataLoader()
     cfg = json.load(open(DATAS_CONFIG))
 
-    all_poetrys = loader.extract_from_multiple(list(cfg['datasets'].keys()))
-    print(f"共计 {len(all_poetrys)} 首诗歌。")
+    # all_poetrys = loader.extract_from_multiple(list(cfg['datasets'].keys()))
+    # print(f"共计 {len(all_poetrys)} 首诗歌。")
+    # while True:
+    #     input()
+    #     pprint(random.choice(all_poetrys))
 
-    while True:
-        input()
-        pprint(random.choice(all_poetrys))
+    shijing = loader.body_extractor("shijing")
+    for sj in shijing:
+        sj['author'] = sj['chapter'] + '-' + sj['section']
+        sj['type'] = '诗经'
+    shijing = [sj for sj in shijing if len(''.join(sj['content'])) < 100]
+    shuimotangshi = loader.body_extractor("shuimotangshi")
+    for smts in shuimotangshi:
+        smts['type'] = '水墨唐诗'
+        smts['content'] = smts['paragraphs']
+        del smts['paragraphs']
+    shuimotangshi = [smts for smts in shuimotangshi if len(''.join(smts['content'])) < 100]
+
+    all_poetrys = shijing + shuimotangshi
+    print(f"共计 {len(all_poetrys)} 首诗歌。")
+    json.dump(
+        all_poetrys,
+        open("./data/shici.json", "w", encoding="utf-8"),
+        ensure_ascii=False,
+        indent=2
+    )

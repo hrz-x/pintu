@@ -180,5 +180,7 @@ cython_debug/
 /data/hanzi_video
 
 /chinese-poetry-master
+/data/shici_pics
+/data/shici_splited
 
 api.txt
