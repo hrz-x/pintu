@@ -834,79 +834,127 @@
             
             // 添加事件监听器
             function addEventListeners() {
-                // 拖拽开始
-                gameState.pieces.forEach(piece => {
-                    piece.element.addEventListener('dragstart', (e) => {
-                        e.dataTransfer.setData('text/plain', piece.index);
-                        piece.element.classList.add('dragging');
-                    });
-                    
-                    piece.element.addEventListener('dragend', () => {
-                        piece.element.classList.remove('dragging');
-                    });
-                });
                 
-                // 拖拽经过目标区域
-                gameState.slots.forEach(slot => {
-                    slot.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        slot.classList.add('hover');
-                    });
-                    
-                    slot.addEventListener('dragleave', () => {
-                        slot.classList.remove('hover');
-                    });
-                    
-                    slot.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        slot.classList.remove('hover');
-                        
-                        const pieceIndex = parseInt(e.dataTransfer.getData('text/plain'));
-                        const piece = gameState.pieces.find(p => p.index === pieceIndex);
-                        
-                        if (piece && !slot.classList.contains('correct')) {
-                            // 检查是否是正确的拼图块
-                            const slotIndex = parseInt(slot.dataset.index);
+                // 设置拖拽功能
+                function setupDrag() {
+                    // 拖拽开始
+                    gameState.pieces.forEach(piece => {
+                        let isDragging = false;
+                        let startX, startY;
+                        let originalX, originalY;
+                        let currentSlot = null;
+
+                        piece.element.addEventListener('pointerdown', (e) => {
+                            // 如果已经是正确放置的拼图块，则不允许拖拽
+                            if (piece.element.classList.contains('correct')) return;
                             
-                            if (piece.index === slotIndex) {
-                                // 正确放置
-                                slot.classList.add('correct');
-                                
-                                // 添加图片到目标位置
-                                const img = document.createElement('div');
-                                img.style.width = '100%';
-                                img.style.height = '100%';
-                                img.style.backgroundImage = `url('/hanzi_splited/${font}/${zi}/${gameData.components[pieceIndex].filename}')`;
-                                img.style.backgroundSize = 'contain';
-                                img.style.backgroundRepeat = 'no-repeat';
-                                img.style.backgroundPosition = 'center';
-                                slot.innerHTML = '';
-                                slot.appendChild(img);
-                                
-                                // 标记拼图块为完成
-                                piece.element.classList.add('correct');
-                                piece.element.style.transform = 'none';
-                                piece.element.style.opacity = '0.5';
-                                piece.element.style.cursor = 'default';
-                                
-                                // 更新游戏状态
-                                gameState.completed++;
-                                completedCount.textContent = gameState.completed;
-                                
-                                // 检查游戏是否完成
-                                if (gameState.completed === gameData.components.length) {
-                                    gameComplete();
-                                }
+                            e.preventDefault();
+                            isDragging = true;
+                            piece.element.setPointerCapture(e.pointerId);
+                            piece.element.classList.add('dragging');
+                            
+                            // 记录初始位置
+                            startX = e.clientX;
+                            startY = e.clientY;
+                            originalX = piece.element.offsetLeft;
+                            originalY = piece.element.offsetTop;
+                        });
+
+                        document.addEventListener('pointermove', (e) => {
+                            if (!isDragging) return;
+                            e.preventDefault();
+                            
+                            // 计算移动距离
+                            const dx = e.clientX - startX;
+                            const dy = e.clientY - startY;
+                            
+                            // 更新拼图块位置
+                            piece.element.style.transform = `translate(${dx}px, ${dy}px)`;
+                            
+                            // 检查是否悬停在目标区域上
+                            const hoveredSlot = document.elementFromPoint(e.clientX, e.clientY);
+                            const validSlot = gameState.slots.find(slot => slot === hoveredSlot);
+                            
+                            // 更新目标区域的高亮状态
+                            if (currentSlot && currentSlot !== validSlot) {
+                                currentSlot.classList.remove('hover');
                             }
                             
-                            // 更新移动次数
-                            gameState.moves++;
-                            moveCount.textContent = gameState.moves;
-                        }
+                            if (validSlot && validSlot !== currentSlot) {
+                                validSlot.classList.add('hover');
+                            }
+                            
+                            currentSlot = validSlot;
+                        });
+
+                        document.addEventListener('pointerup', (e) => {
+                            if (!isDragging) return;
+                            isDragging = false;
+                            piece.element.releasePointerCapture(e.pointerId);
+                            piece.element.classList.remove('dragging');
+                            
+                            // 移除所有目标区域的高亮
+                            gameState.slots.forEach(slot => slot.classList.remove('hover'));
+                            
+                            // 检查是否放置到了有效的目标区域
+                            if (currentSlot && !currentSlot.classList.contains('correct')) {
+                                const slotIndex = parseInt(currentSlot.dataset.index);
+                                
+                                if (piece.index === slotIndex) {
+                                    // 正确放置
+                                    currentSlot.classList.add('correct');
+                                    
+                                    // 添加图片到目标位置
+                                    const img = document.createElement('div');
+                                    img.style.width = '100%';
+                                    img.style.height = '100%';
+                                    img.style.backgroundImage = `url('/hanzi_splited/${font}/${zi}/${gameData.components[piece.index].filename}')`;
+                                    img.style.backgroundSize = 'contain';
+                                    img.style.backgroundRepeat = 'no-repeat';
+                                    img.style.backgroundPosition = 'center';
+                                    currentSlot.innerHTML = '';
+                                    currentSlot.appendChild(img);
+                                    
+                                    // 标记拼图块为完成
+                                    piece.element.classList.add('correct');
+                                    piece.element.style.transform = 'none';
+                                    piece.element.style.opacity = '0.5';
+                                    piece.element.style.cursor = 'default';
+                                    
+                                    // 更新游戏状态
+                                    gameState.completed++;
+                                    completedCount.textContent = gameState.completed;
+                                    
+                                    // 检查游戏是否完成
+                                    if (gameState.completed === gameData.components.length) {
+                                        gameComplete();
+                                    }
+                                } else {
+                                    // 错误放置，返回原位
+                                    piece.element.style.transform = 'none';
+                                }
+                                
+                                // 更新移动次数
+                                gameState.moves++;
+                                moveCount.textContent = gameState.moves;
+                            } else {
+                                // 没有放置到目标区域，返回原位
+                                piece.element.style.transform = 'none';
+                            }
+                            
+                            currentSlot = null;
+                        });
                     });
-                });
-                
-                
+                    
+                    // 为拼图块添加CSS样式
+                    gameState.pieces.forEach(piece => {
+                        piece.element.style.touchAction = 'none'; // 禁用默认触摸行为
+                    });
+                }
+
+                // 初始化时调用
+                setupDrag();                
+                    
 
                 
                 btnSolve.addEventListener('click', () => {
@@ -1019,7 +1067,7 @@
             }
         }
 
-                // 检测微信内置浏览器
+        // 检测微信内置浏览器
         function isWeChatBrowser() {
             // 通过userAgent检测
             var ua = navigator.userAgent.toLowerCase();
