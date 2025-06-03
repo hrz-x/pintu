@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉字拼图</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        .top-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* background-color: #f8f8f8; */
+            color: #333;
+            /* padding: 10px; */
+            text-align: center;
+            /* border-bottom: 1px solid #ddd; */
+            z-index: 9999;
+            /* 确保在最上层 */
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+        }
+
+        .help {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            /* background-color: #f8f8f8; */
+            color: #333;
+            /* padding: 10px; */
+            text-align: center;
+            /* border-bottom: 1px solid #ddd; */
+            z-index: 9999;
+            /* 确保在最上层 */
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+        }
+
+        body {
+            margin-top: 50px;
+            /* 为固定条留出空间，防止内容被遮挡 */
+            /* background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            /* max-width: 900px; */
+            width: 100%;
+            background: rgba(255, 255, 255, 0.0);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.0);
+        }
+
+        header {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.0);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.0);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .target-area {
+            flex: 1;
+            min-width: 300px;
+            /* background: rgba(0, 0, 0, 0.15); */
+            /* border: 2px dashed rgba(0, 0, 0, 0.4); */
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* flex-direction: column; */
+        }
+
+        .target-title {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffeb3b;
+        }
+
+        .puzzle-target {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.0);
+            border-radius: 10px;
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3); */
+        }
+
+        .puzzle-pieces {
+            flex: 1;
+            /* width: 200px; */
+            /* background: rgba(0, 0, 0, 0.15); */
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            /* flex-direction: column; */
+        }
+
+        .pieces-title {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffeb3b;
+        }
+
+        .pieces-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            /* flex-direction: column; */
+            /* width: 200px; */
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .puzzle-piece {
+            height: 100px;
+            background: rgba(255, 255, 255, 0.0);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.0);
+
+            display: flex;
+            align-items: center;
+            /* 垂直居中 */
+            justify-content: center;
+            /* 水平居中 */
+        }
+
+        .puzzle-piece:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.0);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .piece-label {
+            width: 40px;
+            height: 40px;
+            background: #ff416c;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .piece-preview {
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* border: 2px solid rgba(255, 255, 255, 0.3); */
+            border-radius: 5px;
+            flex-shrink: 0;
+
+        }
+
+        .piece-info {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .piece-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #4cffaf;
+        }
+
+        .piece-size {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .target-slot {
+            position: absolute;
+            border: 2px dashed rgba(0, 0, 0, 0.4);
+            /* border: 2px dashed rgba(255, 255, 255, 0.4); */
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .target-slot.hover {
+            border: 2px solid #4cff00;
+            background: rgba(76, 255, 0, 0.1);
+            box-shadow: 0 0 15px rgba(76, 255, 0, 0.3);
+        }
+
+        .target-slot.correct {
+            border: 2px solid #4cff00;
+            background: rgba(76, 255, 0, 0.15);
+            box-shadow: 0 0 20px rgba(76, 255, 0, 0.4);
+        }
+
+        .target-slot.correct::after {
+            content: "✓";
+            display: none;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 10px;
+            height: 10px;
+            background: #4cff00;
+            border-radius: 50%;
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .character-display {
+            font-size: 15rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            z-index: -1;
+            user-select: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-top: 5px;
+            color: #ffeb3b;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        /* button {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        } */
+
+        .btn-reset {
+            background: linear-gradient(to right, #36D1DC, #5B86E5);
+        }
+
+        .completed-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .completed-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .completed-content {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.5s ease;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .completed-overlay.show .completed-content {
+            transform: scale(1);
+        }
+
+        .completed-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .completed-content p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .character-result {
+            font-size: 10rem;
+            margin: 20px 0;
+            color: #ffeb3b;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                /* flex-direction: column; */
+            }
+
+            .character-display {
+                font-size: 10rem;
+            }
+
+
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* 容器需要相对定位 */
+        .video-bg-container {
+            position: relative;
+            width: 360px;
+            height: 360px;
+            overflow: hidden;
+            border: 2px dashed #dedcdc;
+        }
+
+        /* 视频设置为绝对定位，作为背景 */
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 99;
+        }
+
+        /* 内容放在视频上方 */
+        .content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* 全屏按钮样式 */
+        #fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 10%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        #btn-solve {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            width: 80px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+            border-radius: 10%;
+            color: rgb(247, 212, 15);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #btn-solve:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        /* 页面内容样式 */
+        .content {
+            padding: 80px 20px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        /* 全屏状态下的按钮样式调整 */
+        :fullscreen #fullscreen-btn,
+        :-webkit-full-screen #fullscreen-btn,
+        :-moz-full-screen #fullscreen-btn,
+        :-ms-fullscreen #fullscreen-btn {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #333;
+        }
+
+        /* 提示弹窗样式 */
+        .wechat-tip {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .wechat-tip-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .wechat-tip h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .wechat-tip p {
+            margin-bottom: 20px;
+        }
+
+        .wechat-tip-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #07C160;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .wechat-tip-btn:hover {
+            background-color: #06AD56;
+        }
+
+        .wechat-tip-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        /* 横屏提示样式 */
+        .orientation-tip {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            color: white;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .orientation-tip-content {
+            max-width: 80%;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .orientation-tip h2 {
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .orientation-tip p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .orientation-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: rotate 2s infinite ease-in-out;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* 横屏时隐藏提示 */
+        @media screen and (orientation: landscape) {
+            .orientation-tip {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body style="
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                      url('/data/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+">
+    <!-- 微信提示弹窗 -->
+    <div id="wechatTip" class="wechat-tip">
+        <div class="wechat-tip-content">
+            <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信" class="wechat-tip-logo">
+            <h2>请在浏览器中打开</h2>
+            <p>检测到您正在使用微信内置浏览器访问，部分功能可能受限。</p>
+            <p>为了获得完整体验，请点击右上角菜单，选择"在浏览器中打开"。</p>
+            <a href="#" id="closeTip" class="wechat-tip-btn">我知道了</a>
+        </div>
+    </div>
+    <!-- 横屏提示 -->
+    <div id="orientationTip" class="orientation-tip">
+        <div class="orientation-tip-content">
+            <div class="orientation-icon">🔄</div>
+            <h2>请横屏浏览</h2>
+            <p>检测到您正在使用竖屏模式，部分内容可能无法完整显示。</p>
+            <p>为了获得最佳体验，请将设备旋转至横屏模式。</p>
+        </div>
+    </div>
+
+    <div class="top-banner" id="banner"></div>
+    <div class="help">拖动左侧拼图至右侧区域来组成汉字<br>Drag the puzzle pieces on the left to the right area to form Chinese
+        characters</div>
+    <!-- 全屏按钮 -->
+    <button id="fullscreen-btn" title="切换全屏">⛶ 全屏</button>
+    <button id="btn-solve">
+        <i class="fas fa-lightbulb"></i> &nbsp;提示
+    </button>
+    <div class="container">
+
+        <div class="game-area">
+
+            <div class="target-area">
+                <!-- <div class="target-title">目标区域</div> -->
+
+                <div class="puzzle-target" id="puzzle-target" class="content">
+                    <!-- 目标位置将由JS动态生成 -->
+                </div>
+
+            </div>
+
+            <div class="puzzle-pieces">
+                <!-- <div class="pieces-title">拼图部件</div> -->
+                <div class="pieces-container" id="pieces-container">
+                    <!-- 拼图块将由JS动态生成 -->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="stats" style="display: none;">
+            <div class="stat-item">
+                完成进度
+                <div class="stat-value"><span id="completed-count">0</span>/3</div>
+            </div>
+            <div class="stat-item">
+                移动次数
+                <div class="stat-value" id="move-count">0</div>
+            </div>
+            <div class="stat-item">
+                用时
+                <div class="stat-value" id="timer">0s</div>
+            </div>
+        </div>
+
+        <div class="controls" style="display: none;">
+
+            <button id="btn-reset" class="btn-reset">
+                <i class="fas fa-redo"></i> 重新开始
+            </button>
+            <button id="btn-solve">
+                <i class="fas fa-lightbulb"></i> 显示答案
+            </button>
+        </div>
+    </div>
+
+    <div class="completed-overlay" id="completed-overlay" style="display: none;">
+        <div class="completed-content">
+            <h2>恭喜过关! <i class="fas fa-trophy"></i></h2>
+            <p>用时 <span id="final-time">0</span> 秒，移动了 <span id="final-moves">0</span> 次</p>
+            <button id="btn-play-again">
+                <i class="fas fa-play"></i> 再玩一次
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            document.querySelector('.help').style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('.help').style.display = 'none';
+            }, 5000);
+
+
+            // DOM 元素
+            const puzzleTarget = document.getElementById('puzzle-target');
+            const piecesContainer = document.getElementById('pieces-container');
+            const btnReset = document.getElementById('btn-reset');
+            const btnSolve = document.getElementById('btn-solve');
+            const btnPlayAgain = document.getElementById('btn-play-again');
+            const completedOverlay = document.getElementById('completed-overlay');
+            const completedCount = document.getElementById('completed-count');
+            const moveCount = document.getElementById('move-count');
+            const timerDisplay = document.getElementById('timer');
+            const finalTime = document.getElementById('final-time');
+            const finalMoves = document.getElementById('final-moves');
+
+            // 游戏状态
+            let gameState = {
+                pieces: [],
+                slots: [],
+                moves: 0,
+                completed: 0,
+                startTime: Date.now(),
+                timerInterval: null,
+                elapsedTime: 0
+            };
+
+            const candidates = (await fetch('/data/shici_available.json').then(res => res.json())).sort(() => Math.random() - 0.5);
+            let gameData = null;
+            let sc = '';
+            let idx = 0;
+
+
+            // 初始化游戏
+            async function initGame() {
+                // 清除现有状态
+                piecesContainer.innerHTML = '';
+                gameState.pieces = [];
+                gameState.slots = [];
+                gameState.moves = 0;
+                gameState.completed = 0;
+                gameState.elapsedTime = 0;
+                moveCount.textContent = '0';
+                completedCount.textContent = '0';
+                timerDisplay.textContent = '0s';
+                puzzleTarget.innerHTML = '';
+                completedOverlay.classList.remove('show');
+                finalTime.textContent = '0';
+                finalMoves.textContent = '0';
+                // 清除之前的拼图块和目标位置
+                const existingSlots = document.querySelectorAll('.target-slot');
+                existingSlots.forEach(slot => slot.remove());
+                const existingPieces = document.querySelectorAll('.puzzle-piece');
+                existingPieces.forEach(piece => piece.remove());
+
+
+
+                // 停止之前的计时器
+                if (gameState.timerInterval) {
+                    clearInterval(gameState.timerInterval);
+                }
+
+                // 开始新计时器
+                gameState.startTime = Date.now();
+                gameState.timerInterval = setInterval(updateTimer, 1000);
+
+                // 获取文字数据
+                let randomItem = candidates[(idx++) % candidates.length];
+                sc = randomItem['title'] + '_' + randomItem['author'];
+
+                gameData = await fetch(`/shici_splited/${sc}/components_info.json`).then(res => res.json());
+                console.log(candidates, sc, gameData);
+
+
+                // 创建目标位置
+                gameData.components.forEach((component, index) => {
+                    const slot = document.createElement('div');
+                    slot.className = 'target-slot';
+                    slot.dataset.index = index;
+
+                    // 设置位置和尺寸（按比例缩小以适应容器）
+                    const scale = 1;
+                    slot.style.width = `${component.size.width * scale}px`;
+                    slot.style.height = `${component.size.height * scale}px`;
+                    slot.style.left = `${component.bbox.x * scale}px`;
+                    slot.style.top = `${component.bbox.y * scale}px`;
+
+                    puzzleTarget.appendChild(slot);
+                    gameState.slots.push(slot);
+                });
+
+                // 创建拼图块
+                gameData.components.forEach((component, index) => {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.dataset.index = index;
+
+                    // 添加拖拽功能
+                    piece.draggable = true;
+
+                    // 添加内容
+                    piece.innerHTML = `
+                        <div class="piece-preview" style="background-image: url('/shici_splited/${sc}/${component.filename}')"></div>
+                    `;
+
+                    piecesContainer.appendChild(piece);
+
+                    // 保存到状态
+                    gameState.pieces.push({
+                        element: piece,
+                        index: index,
+                        correctX: component.bbox.x,
+                        correctY: component.bbox.y,
+                        width: component.size.width,
+                        height: component.size.height
+                    });
+                });
+
+                // 添加事件监听器
+                addEventListeners();
+
+            }
+
+            // 更新计时器
+            function updateTimer() {
+                const now = Date.now();
+                gameState.elapsedTime = Math.floor((now - gameState.startTime) / 1000);
+                timerDisplay.textContent = `${gameState.elapsedTime}s`;
+            }
+
+
+
+            // 添加事件监听器
+            function addEventListeners() {
+
+                // 设置拖拽功能
+                gameState.pieces.forEach(piece => {
+                    let isDragging = false;
+                    let startX, startY;
+                    let originalX, originalY;
+                    let currentSlot = null;
+
+                    piece.element.addEventListener('pointerdown', (e) => {
+                        // 如果已经是正确放置的拼图块，则不允许拖拽
+                        if (piece.element.classList.contains('correct')) return;
+
+                        e.preventDefault();
+                        isDragging = true;
+                        piece.element.setPointerCapture(e.pointerId);
+                        piece.element.classList.add('dragging');
+
+                        // 记录初始位置
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        originalX = piece.element.offsetLeft;
+                        originalY = piece.element.offsetTop;
+                    });
+
+                    document.addEventListener('pointermove', (e) => {
+                        if (!isDragging) return;
+                        e.preventDefault();
+
+                        // 计算移动距离
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        // 更新拼图块位置
+                        piece.element.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                        // 检查是否悬停在目标区域上
+                        const hoveredSlot = document.elementFromPoint(e.clientX, e.clientY);
+                        const validSlot = gameState.slots.find(slot => slot === hoveredSlot);
+
+                        // 更新目标区域的高亮状态
+                        if (currentSlot && currentSlot !== validSlot) {
+                            currentSlot.classList.remove('hover');
+                        }
+
+                        if (validSlot && validSlot !== currentSlot) {
+                            validSlot.classList.add('hover');
+                        }
+
+                        currentSlot = validSlot;
+                    });
+
+                    document.addEventListener('pointerup', (e) => {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        piece.element.releasePointerCapture(e.pointerId);
+                        piece.element.classList.remove('dragging');
+
+                        // 移除所有目标区域的高亮
+                        gameState.slots.forEach(slot => slot.classList.remove('hover'));
+
+                        // 检查是否放置到了有效的目标区域
+                        if (currentSlot && !currentSlot.classList.contains('correct')) {
+                            const slotIndex = parseInt(currentSlot.dataset.index);
+
+                            if (piece.index === slotIndex) {
+                                // 正确放置
+                                currentSlot.classList.add('correct');
+
+                                // 添加图片到目标位置
+                                const img = document.createElement('div');
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.style.backgroundImage = `url('/shici_splited/${sc}/${gameData.components[piece.index].filename}')`;
+                                img.style.backgroundSize = 'contain';
+                                img.style.backgroundRepeat = 'no-repeat';
+                                img.style.backgroundPosition = 'center';
+                                currentSlot.innerHTML = '';
+                                currentSlot.appendChild(img);
+
+                                // 标记拼图块为完成
+                                piece.element.classList.add('correct');
+                                piece.element.style.transform = 'none';
+                                piece.element.style.opacity = '0.5';
+                                piece.element.style.cursor = 'default';
+
+                                // 更新游戏状态
+                                gameState.completed++;
+                                completedCount.textContent = gameState.completed;
+
+                                // 将piece从gameState.pieces中移除
+                                const pieceIndex = gameState.pieces.findIndex(p => p.index === piece.index);
+                                if (pieceIndex !== -1) {
+                                    gameState.pieces.splice(pieceIndex, 1);
+                                }
+                                // 从 piecesContainer 中移除拼图块
+                                piecesContainer.removeChild(piece.element);
+
+                                // 检查游戏是否完成
+                                if (gameState.completed === gameData.components.length) {
+                                    gameComplete();
+                                }
+                            } else {
+                                // 错误放置，返回原位
+                                piece.element.style.transform = 'none';
+                            }
+
+                            // 更新移动次数
+                            gameState.moves++;
+                            moveCount.textContent = gameState.moves;
+                        } else {
+                            // 没有放置到目标区域，返回原位
+                            piece.element.style.transform = 'none';
+                        }
+
+                        currentSlot = null;
+                    });
+                });
+
+                // 为拼图块添加CSS样式
+                gameState.pieces.forEach(piece => {
+                    piece.element.style.touchAction = 'none'; // 禁用默认触摸行为
+                });
+
+
+            }
+
+            btnSolve.addEventListener('click', () => {
+                // 创建一个副本数组，因为我们要修改原始数组
+                let piecesToProcess = [...gameState.pieces];
+                console.log(piecesToProcess)
+
+                piecesToProcess.forEach(piece => {
+                    if (Math.random() < 0.5) return; // 随机跳过一些拼图块
+
+                    const slot = gameState.slots[piece.index];
+                    if (!slot) {
+                        console.warn(`Slot with index ${piece.index} not found`);
+                        return;
+                    }
+
+                    // 标记槽位为正确
+                    slot.classList.add('correct');
+
+                    // 添加图片到目标位置
+                    const img = document.createElement('div');
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.backgroundImage = `url('/shici_splited/${sc}/${gameData.components[piece.index].filename}')`;
+                    img.style.backgroundSize = 'contain';
+                    img.style.backgroundRepeat = 'no-repeat';
+                    img.style.backgroundPosition = 'center';
+                    slot.innerHTML = '';
+                    slot.appendChild(img);
+
+                    // 标记拼图块为完成
+                    piece.element.classList.add('correct');
+                    piece.element.style.opacity = '0.5';
+                    piece.element.style.cursor = 'default';
+
+                    // 从DOM中移除拼图块
+                    piecesContainer.removeChild(piece.element);
+
+                    // 更新游戏状态
+                    gameState.completed++;
+                    completedCount.textContent = gameState.completed;
+
+                    // 从gameState.pieces中移除该拼图块
+                    const pieceIndex = gameState.pieces.findIndex(p => p.index === piece.index);
+                    if (pieceIndex !== -1) {
+                        gameState.pieces.splice(pieceIndex, 1);
+                    }
+                });
+
+                // 检查游戏是否完成
+                if (gameState.completed === gameData.components.length) {
+                    gameComplete();
+                }
+            });
+            // 游戏完成
+            function gameComplete() {
+                initGame();
+            }
+
+            btnReset.addEventListener('click', () => {
+                initGame();
+            });
+
+            btnPlayAgain.addEventListener('click', () => {
+                completedOverlay.classList.remove('show');
+                initGame();
+            });
+            // 开始游戏
+            initGame();
+        });
+
+
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        // 切换全屏
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                // 进入全屏
+                const element = document.documentElement;
+
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) { /* Safari */
+                    element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) { /* IE11 */
+                    element.msRequestFullscreen();
+                }
+
+                fullscreenBtn.innerHTML = '⛶ 全屏'; // 全屏图标
+                fullscreenBtn.setAttribute('title', '退出全屏');
+            } else {
+                // 退出全屏
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+
+                fullscreenBtn.innerHTML = '⛶'; // 退出全屏图标
+                fullscreenBtn.setAttribute('title', '进入全屏');
+            }
+        }
+
+        // 按钮点击事件
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // 监听全屏状态变化
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+        // 更新按钮状态
+        function updateFullscreenButton() {
+            if (document.fullscreenElement) {
+                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.setAttribute('title', '退出全屏');
+            } else {
+                fullscreenBtn.innerHTML = '⛶ 全屏';
+                fullscreenBtn.setAttribute('title', '进入全屏');
+            }
+        }
+
+        // 检测微信内置浏览器
+        function isWeChatBrowser() {
+            // 通过userAgent检测
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.indexOf('micromessenger') !== -1;
+        }
+
+        // 显示提示
+        function showWeChatTip() {
+            var tip = document.getElementById('wechatTip');
+            tip.style.display = 'block';
+        }
+
+        // 关闭提示
+        document.getElementById('closeTip').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('wechatTip').style.display = 'none';
+        });
+
+        // 页面加载时检测
+        window.onload = function () {
+            if (isWeChatBrowser()) {
+                showWeChatTip();
+            }
+        };
+
+        // 或者DOM加载完成后立即检测
+        document.addEventListener('DOMContentLoaded', function () {
+            if (isWeChatBrowser()) {
+                showWeChatTip();
+            }
+        });
+
+        // 检测屏幕方向
+        function checkOrientation() {
+            const tip = document.getElementById('orientationTip');
+
+            // 方法1: 使用CSS媒体查询检测
+            const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+
+            // 方法2: 使用window.orientation或screen.orientation (更可靠)
+            let isPortraitAlt = true;
+            if (window.orientation !== undefined) {
+                // iOS设备
+                isPortraitAlt = Math.abs(window.orientation) !== 90;
+            } else if (screen.orientation !== undefined) {
+                // 现代浏览器
+                isPortraitAlt = screen.orientation.type.includes('portrait');
+            }
+
+            // 如果检测到竖屏，显示提示
+            if (isPortrait && isPortraitAlt) {
+                tip.style.display = 'flex';
+            } else {
+                tip.style.display = 'none';
+            }
+
+
+            document.querySelector('.help').style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('.help').style.display = 'none';
+            }, 5000);
+
+        }
+
+        // 初始检测
+        checkOrientation();
+
+        // 添加方向变化监听
+        window.addEventListener('orientationchange', checkOrientation);
+
+        // 某些设备可能需要resize事件
+        window.addEventListener('resize', checkOrientation);
+
+        // 兼容性处理
+        if (screen.orientation) {
+            screen.orientation.addEventListener('change', checkOrientation);
+        }
+
+    </script>
+</body>
+
+</html>
