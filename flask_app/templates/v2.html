@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>汉字拼图</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
     <style>
         * {
             margin: 0;
@@ -12,6 +17,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
+
         .top-banner {
             position: fixed;
             top: 0;
@@ -22,9 +28,11 @@
             /* padding: 10px; */
             text-align: center;
             /* border-bottom: 1px solid #ddd; */
-            z-index: 9999; /* 确保在最上层 */
+            z-index: 9999;
+            /* 确保在最上层 */
             /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
-        }        
+        }
+
         .help {
             position: fixed;
             top: 60px;
@@ -35,12 +43,14 @@
             /* padding: 10px; */
             text-align: center;
             /* border-bottom: 1px solid #ddd; */
-            z-index: 9999; /* 确保在最上层 */
+            z-index: 9999;
+            /* 确保在最上层 */
             /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
         }
-        
+
         body {
-            margin-top: 50px; /* 为固定条留出空间，防止内容被遮挡 */
+            margin-top: 50px;
+            /* 为固定条留出空间，防止内容被遮挡 */
             /* background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); */
             min-height: 100vh;
             display: flex;
@@ -49,7 +59,7 @@
             padding: 20px;
             color: #fff;
         }
-        
+
         .container {
             max-width: 900px;
             width: 100%;
@@ -59,33 +69,33 @@
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.0);
         }
-        
+
         header {
             padding: 25px;
             background: rgba(0, 0, 0, 0.0);
             text-align: center;
         }
-        
+
         h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.0);
         }
-        
+
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
         }
-        
+
         .game-area {
             display: flex;
             flex-wrap: wrap;
             padding: 30px;
             gap: 30px;
         }
-        
+
         .target-area {
             flex: 1;
             min-width: 300px;
@@ -96,14 +106,14 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .target-title {
             text-align: center;
             font-size: 1.3rem;
             margin-bottom: 15px;
             color: #ffeb3b;
         }
-        
+
         .puzzle-target {
             flex: 1;
             background: rgba(0, 0, 0, 0.0);
@@ -116,7 +126,7 @@
             overflow: hidden;
             /* box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3); */
         }
-        
+
         .puzzle-pieces {
             flex: 1;
             /* width: 200px; */
@@ -126,14 +136,14 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .pieces-title {
             text-align: center;
             font-size: 1.3rem;
             margin-bottom: 15px;
             color: #ffeb3b;
         }
-        
+
         .pieces-container {
             flex: 1;
             display: flex;
@@ -142,7 +152,7 @@
             gap: 20px;
             justify-content: center;
         }
-        
+
         .puzzle-piece {
             height: 100px;
             background: rgba(255, 255, 255, 0.0);
@@ -155,18 +165,20 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.0);
-            
+
             display: flex;
-            align-items: center; /* 垂直居中 */
-            justify-content: center; /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+            justify-content: center;
+            /* 水平居中 */
         }
-        
+
         .puzzle-piece:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.0);
             background: rgba(255, 255, 255, 0.25);
         }
-        
+
         .piece-label {
             width: 40px;
             height: 40px;
@@ -180,7 +192,7 @@
             margin-right: 15px;
             flex-shrink: 0;
         }
-        
+
         .piece-preview {
             width: 80px;
             height: 80px;
@@ -190,25 +202,25 @@
             /* border: 2px solid rgba(255, 255, 255, 0.3); */
             border-radius: 5px;
             flex-shrink: 0;
-            
+
         }
-        
+
         .piece-info {
             flex: 1;
             padding: 0 15px;
         }
-        
+
         .piece-title {
             font-size: 1.1rem;
             margin-bottom: 5px;
             color: #4cffaf;
         }
-        
+
         .piece-size {
             font-size: 0.9rem;
             opacity: 0.8;
         }
-        
+
         .target-slot {
             position: absolute;
             border: 2px dashed rgba(0, 0, 0, 0.4);
@@ -220,19 +232,19 @@
             align-items: center;
             background: rgba(255, 255, 255, 0.05);
         }
-        
+
         .target-slot.hover {
             border: 2px solid #4cff00;
             background: rgba(76, 255, 0, 0.1);
             box-shadow: 0 0 15px rgba(76, 255, 0, 0.3);
         }
-        
+
         .target-slot.correct {
             border: 2px solid #4cff00;
             background: rgba(76, 255, 0, 0.15);
             box-shadow: 0 0 20px rgba(76, 255, 0, 0.4);
         }
-        
+
         .target-slot.correct::after {
             content: "✓";
             position: absolute;
@@ -249,7 +261,7 @@
             color: #000;
             font-weight: bold;
         }
-        
+
         .character-display {
             font-size: 15rem;
             font-weight: bold;
@@ -258,7 +270,7 @@
             z-index: -1;
             user-select: none;
         }
-        
+
         .stats {
             display: flex;
             justify-content: center;
@@ -266,19 +278,19 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.2);
         }
-        
+
         .stat-item {
             text-align: center;
             min-width: 150px;
         }
-        
+
         .stat-value {
             font-size: 2.2rem;
             font-weight: bold;
             margin-top: 5px;
             color: #ffeb3b;
         }
-        
+
         .controls {
             display: flex;
             justify-content: center;
@@ -286,7 +298,7 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.15);
         }
-        
+
         /* button {
             background: linear-gradient(to right, #ff416c, #ff4b2b);
             color: white;
@@ -310,11 +322,11 @@
         button:active {
             transform: translateY(1px);
         } */
-        
+
         .btn-reset {
             background: linear-gradient(to right, #36D1DC, #5B86E5);
         }
-        
+
         .completed-overlay {
             position: fixed;
             top: 0;
@@ -330,12 +342,12 @@
             pointer-events: none;
             transition: opacity 0.5s ease;
         }
-        
+
         .completed-overlay.show {
             opacity: 1;
             pointer-events: all;
         }
-        
+
         .completed-content {
             background: linear-gradient(135deg, #11998e, #38ef7d);
             padding: 50px;
@@ -346,44 +358,45 @@
             max-width: 600px;
             width: 90%;
         }
-        
+
         .completed-overlay.show .completed-content {
             transform: scale(1);
         }
-        
+
         .completed-content h2 {
             font-size: 3.5rem;
             margin-bottom: 20px;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        
+
         .completed-content p {
             font-size: 1.5rem;
             margin-bottom: 30px;
             line-height: 1.6;
         }
-        
+
         .character-result {
             font-size: 10rem;
             margin: 20px 0;
             color: #ffeb3b;
             text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-        
+
         @media (max-width: 768px) {
             .game-area {
                 flex-direction: column;
             }
-            
+
             .character-display {
                 font-size: 10rem;
             }
-            
-            .target-area, .puzzle-pieces {
+
+            .target-area,
+            .puzzle-pieces {
                 /* min-width: 100%; */
             }
         }
-        
+
         .watermark {
             position: absolute;
             bottom: 10px;
@@ -391,33 +404,34 @@
             font-size: 0.8rem;
             opacity: 0.7;
         }
+
         /* 容器需要相对定位 */
         .video-bg-container {
-        position: relative;
-        width: 360px;
-        height: 360px;
-        overflow: hidden;
-        border: 2px dashed #dedcdc;
+            position: relative;
+            width: 360px;
+            height: 360px;
+            overflow: hidden;
+            border: 2px dashed #dedcdc;
         }
-        
+
         /* 视频设置为绝对定位，作为背景 */
         .video-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 99;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 99;
         }
-        
+
         /* 内容放在视频上方 */
         .content {
-        position: relative;
-        z-index: 1;
-        color: white;
-        padding: 20px;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         body {
@@ -427,7 +441,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        
+
         /* 全屏按钮样式 */
         #fullscreen-btn {
             position: fixed;
@@ -447,23 +461,23 @@
             justify-content: center;
             transition: all 0.3s ease;
         }
-        
+
         #fullscreen-btn:hover {
             background-color: rgba(0, 0, 0, 0.3);
             transform: scale(1.1);
         }
-        
+
         /* 页面内容样式 */
         .content {
             padding: 80px 20px 20px;
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         h1 {
             color: #2c3e50;
         }
-        
+
         /* 全屏状态下的按钮样式调整 */
         :fullscreen #fullscreen-btn,
         :-webkit-full-screen #fullscreen-btn,
@@ -488,7 +502,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        
+
         .wechat-tip-content {
             position: absolute;
             top: 50%;
@@ -502,16 +516,16 @@
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         .wechat-tip h2 {
             color: #333;
             margin-top: 0;
         }
-        
+
         .wechat-tip p {
             margin-bottom: 20px;
         }
-        
+
         .wechat-tip-btn {
             display: inline-block;
             padding: 10px 20px;
@@ -521,11 +535,11 @@
             border-radius: 5px;
             font-weight: bold;
         }
-        
+
         .wechat-tip-btn:hover {
             background-color: #06AD56;
         }
-        
+
         .wechat-tip-logo {
             width: 60px;
             height: 60px;
@@ -548,7 +562,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .orientation-tip-content {
             max-width: 80%;
             padding: 20px;
@@ -556,38 +570,43 @@
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-        
+
         .orientation-tip h2 {
             margin-top: 0;
             color: #fff;
         }
-        
+
         .orientation-tip p {
             margin-bottom: 20px;
             font-size: 16px;
         }
-        
+
         .orientation-icon {
             font-size: 60px;
             margin-bottom: 20px;
             animation: rotate 2s infinite ease-in-out;
         }
-        
+
         @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(90deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(90deg);
+            }
         }
-        
+
         /* 横屏时隐藏提示 */
         @media screen and (orientation: landscape) {
             .orientation-tip {
                 display: none !important;
             }
         }
-
     </style>
 </head>
-<body  style="
+
+<body style="
     background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
                       url('/data/bg.jpg');
     background-size: cover;
@@ -615,12 +634,13 @@
     </div>
 
     <div class="top-banner" id="banner"></div>
-    <div class="help" >拖动左侧拼图至右侧区域来组成汉字<br>Drag the puzzle pieces on the left to the right area to form Chinese characters</div>
+    <div class="help">拖动左侧拼图至右侧区域来组成汉字<br>Drag the puzzle pieces on the left to the right area to form Chinese
+        characters</div>
     <!-- 全屏按钮 -->
     <button id="fullscreen-btn" title="切换全屏">⛶ 全屏</button>
-    
+
     <div class="container">
-        
+
         <div class="game-area">
             <div class="puzzle-pieces">
                 <!-- <div class="pieces-title">拼图部件</div> -->
@@ -633,22 +653,22 @@
                 <!-- <div class="target-title">目标区域</div> -->
                 <div class="video-bg-container">
                     <!-- 视频背景 -->
-                    <video class="video-bg" muted id="bgVideo"  style="display: none;">
-                    <source type="video/mp4">
-                    您的浏览器不支持HTML5视频
+                    <video class="video-bg" muted id="bgVideo" style="display: none;">
+                        <source type="video/mp4">
+                        您的浏览器不支持HTML5视频
                     </video>
-                    
+
                     <!-- 内容 -->
-                <div class="puzzle-target" id="puzzle-target" class="content">
-                    <!-- 目标位置将由JS动态生成 -->
-                </div>    
-                </div>         
+                    <div class="puzzle-target" id="puzzle-target" class="content">
+                        <!-- 目标位置将由JS动态生成 -->
+                    </div>
+                </div>
             </div>
 
-            
+
         </div>
-        
-        <div class="stats"  style="display: none;">
+
+        <div class="stats" style="display: none;">
             <div class="stat-item">
                 完成进度
                 <div class="stat-value"><span id="completed-count">0</span>/3</div>
@@ -662,8 +682,8 @@
                 <div class="stat-value" id="timer">0s</div>
             </div>
         </div>
-        
-        <div class="controls"  style="display: none;">
+
+        <div class="controls" style="display: none;">
 
             <button id="btn-reset" class="btn-reset">
                 <i class="fas fa-redo"></i> 重新开始
@@ -673,7 +693,7 @@
             </button>
         </div>
     </div>
-    
+
     <div class="completed-overlay" id="completed-overlay" style="display: none;">
         <div class="completed-content">
             <h2>恭喜过关! <i class="fas fa-trophy"></i></h2>
@@ -683,7 +703,7 @@
             </button>
         </div>
     </div>
-    
+
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
@@ -707,7 +727,7 @@
             const finalTime = document.getElementById('final-time');
             const finalMoves = document.getElementById('final-moves');
             const video = document.getElementById('bgVideo');
-            
+
             // 游戏状态
             let gameState = {
                 pieces: [],
@@ -751,16 +771,16 @@
                 bgVideo.style.display = 'none'; // 显示视频背景
 
 
-                
+
                 // 停止之前的计时器
                 if (gameState.timerInterval) {
                     clearInterval(gameState.timerInterval);
                 }
-                
+
                 // 开始新计时器
                 gameState.startTime = Date.now();
                 gameState.timerInterval = setInterval(updateTimer, 1000);
-                
+
                 // 获取文字数据
                 let randomItem = candidates[(idx++) % candidates.length];
                 font = randomItem[0];
@@ -779,34 +799,34 @@
                     const slot = document.createElement('div');
                     slot.className = 'target-slot';
                     slot.dataset.index = index;
-                    
+
                     // 设置位置和尺寸（按比例缩小以适应容器）
                     const scale = 0.5;
                     slot.style.width = `${component.size.width * scale}px`;
                     slot.style.height = `${component.size.height * scale}px`;
                     slot.style.left = `${component.bbox.x * scale}px`;
                     slot.style.top = `${component.bbox.y * scale}px`;
-                    
+
                     puzzleTarget.appendChild(slot);
                     gameState.slots.push(slot);
                 });
-                
+
                 // 创建拼图块
                 gameData.components.forEach((component, index) => {
                     const piece = document.createElement('div');
                     piece.className = 'puzzle-piece';
                     piece.dataset.index = index;
-                    
+
                     // 添加拖拽功能
                     piece.draggable = true;
-                    
+
                     // 添加内容
                     piece.innerHTML = `
                         <div class="piece-preview" style="background-image: url('/hanzi_splited/${font}/${zi}/${component.filename}')"></div>
                     `;
-                    
+
                     piecesContainer.appendChild(piece);
-                    
+
                     // 保存到状态
                     gameState.pieces.push({
                         element: piece,
@@ -817,24 +837,24 @@
                         height: component.size.height
                     });
                 });
-                
+
                 // 添加事件监听器
                 addEventListeners();
-                
+
             }
-            
+
             // 更新计时器
             function updateTimer() {
                 const now = Date.now();
                 gameState.elapsedTime = Math.floor((now - gameState.startTime) / 1000);
                 timerDisplay.textContent = `${gameState.elapsedTime}s`;
             }
-            
 
-            
+
+
             // 添加事件监听器
             function addEventListeners() {
-                
+
                 // 设置拖拽功能
                 function setupDrag() {
                     // 拖拽开始
@@ -847,12 +867,12 @@
                         piece.element.addEventListener('pointerdown', (e) => {
                             // 如果已经是正确放置的拼图块，则不允许拖拽
                             if (piece.element.classList.contains('correct')) return;
-                            
+
                             e.preventDefault();
                             isDragging = true;
                             piece.element.setPointerCapture(e.pointerId);
                             piece.element.classList.add('dragging');
-                            
+
                             // 记录初始位置
                             startX = e.clientX;
                             startY = e.clientY;
@@ -863,27 +883,27 @@
                         document.addEventListener('pointermove', (e) => {
                             if (!isDragging) return;
                             e.preventDefault();
-                            
+
                             // 计算移动距离
                             const dx = e.clientX - startX;
                             const dy = e.clientY - startY;
-                            
+
                             // 更新拼图块位置
                             piece.element.style.transform = `translate(${dx}px, ${dy}px)`;
-                            
+
                             // 检查是否悬停在目标区域上
                             const hoveredSlot = document.elementFromPoint(e.clientX, e.clientY);
                             const validSlot = gameState.slots.find(slot => slot === hoveredSlot);
-                            
+
                             // 更新目标区域的高亮状态
                             if (currentSlot && currentSlot !== validSlot) {
                                 currentSlot.classList.remove('hover');
                             }
-                            
+
                             if (validSlot && validSlot !== currentSlot) {
                                 validSlot.classList.add('hover');
                             }
-                            
+
                             currentSlot = validSlot;
                         });
 
@@ -892,18 +912,18 @@
                             isDragging = false;
                             piece.element.releasePointerCapture(e.pointerId);
                             piece.element.classList.remove('dragging');
-                            
+
                             // 移除所有目标区域的高亮
                             gameState.slots.forEach(slot => slot.classList.remove('hover'));
-                            
+
                             // 检查是否放置到了有效的目标区域
                             if (currentSlot && !currentSlot.classList.contains('correct')) {
                                 const slotIndex = parseInt(currentSlot.dataset.index);
-                                
+
                                 if (piece.index === slotIndex) {
                                     // 正确放置
                                     currentSlot.classList.add('correct');
-                                    
+
                                     // 添加图片到目标位置
                                     const img = document.createElement('div');
                                     img.style.width = '100%';
@@ -914,17 +934,17 @@
                                     img.style.backgroundPosition = 'center';
                                     currentSlot.innerHTML = '';
                                     currentSlot.appendChild(img);
-                                    
+
                                     // 标记拼图块为完成
                                     piece.element.classList.add('correct');
                                     piece.element.style.transform = 'none';
                                     piece.element.style.opacity = '0.5';
                                     piece.element.style.cursor = 'default';
-                                    
+
                                     // 更新游戏状态
                                     gameState.completed++;
                                     completedCount.textContent = gameState.completed;
-                                    
+
                                     // 检查游戏是否完成
                                     if (gameState.completed === gameData.components.length) {
                                         gameComplete();
@@ -933,7 +953,7 @@
                                     // 错误放置，返回原位
                                     piece.element.style.transform = 'none';
                                 }
-                                
+
                                 // 更新移动次数
                                 gameState.moves++;
                                 moveCount.textContent = gameState.moves;
@@ -941,11 +961,11 @@
                                 // 没有放置到目标区域，返回原位
                                 piece.element.style.transform = 'none';
                             }
-                            
+
                             currentSlot = null;
                         });
                     });
-                    
+
                     // 为拼图块添加CSS样式
                     gameState.pieces.forEach(piece => {
                         piece.element.style.touchAction = 'none'; // 禁用默认触摸行为
@@ -953,14 +973,14 @@
                 }
 
                 // 初始化时调用
-                setupDrag();                
-                    
+                setupDrag();
 
-                
+
+
                 btnSolve.addEventListener('click', () => {
                     gameState.slots.forEach((slot, index) => {
                         slot.classList.add('correct');
-                        
+
                         const img = document.createElement('div');
                         img.style.width = '100%';
                         img.style.height = '100%';
@@ -970,23 +990,23 @@
                         img.style.backgroundPosition = 'center';
                         slot.innerHTML = '';
                         slot.appendChild(img);
-                        
+
                         gameState.pieces[index].element.classList.add('correct');
                         gameState.pieces[index].element.style.opacity = '0.5';
                         gameState.pieces[index].element.style.cursor = 'default';
                     });
-                    
+
                     gameState.completed = gameData.components.length;
                     completedCount.textContent = gameState.completed;
                     gameComplete();
                 });
-                
+
             }
-            
+
             // 游戏完成
             function gameComplete() {
                 clearInterval(gameState.timerInterval);
-                
+
                 setTimeout(() => {
                     finalTime.textContent = gameState.elapsedTime;
                     finalMoves.textContent = gameState.moves;
@@ -994,18 +1014,18 @@
                     bgVideo.style.display = 'block'; // 显示视频背景
                     bgVideo.src = `/hanzi_video/${zi}_${font}_video.mp4`;
                     video.currentTime = 0;  // 将播放位置重置到开始
-                    video.play(); 
+                    video.play();
                     setTimeout(() => {
                         initGame();
-                    }, 8000); 
-                    
+                    }, 8000);
+
                 }, 1000);
             }
 
             btnReset.addEventListener('click', () => {
                 initGame();
             });
-            
+
             btnPlayAgain.addEventListener('click', () => {
                 completedOverlay.classList.remove('show');
                 initGame();
@@ -1014,15 +1034,15 @@
             initGame();
         });
 
-        
+
         const fullscreenBtn = document.getElementById('fullscreen-btn');
-        
+
         // 切换全屏
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 // 进入全屏
                 const element = document.documentElement;
-                
+
                 if (element.requestFullscreen) {
                     element.requestFullscreen();
                 } else if (element.webkitRequestFullscreen) { /* Safari */
@@ -1030,7 +1050,7 @@
                 } else if (element.msRequestFullscreen) { /* IE11 */
                     element.msRequestFullscreen();
                 }
-                
+
                 fullscreenBtn.innerHTML = '⛶ 全屏'; // 全屏图标
                 fullscreenBtn.setAttribute('title', '退出全屏');
             } else {
@@ -1042,20 +1062,20 @@
                 } else if (document.msExitFullscreen) { /* IE11 */
                     document.msExitFullscreen();
                 }
-                
+
                 fullscreenBtn.innerHTML = '⛶'; // 退出全屏图标
                 fullscreenBtn.setAttribute('title', '进入全屏');
             }
         }
-        
+
         // 按钮点击事件
         fullscreenBtn.addEventListener('click', toggleFullscreen);
-        
+
         // 监听全屏状态变化
         document.addEventListener('fullscreenchange', updateFullscreenButton);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
         document.addEventListener('msfullscreenchange', updateFullscreenButton);
-        
+
         // 更新按钮状态
         function updateFullscreenButton() {
             if (document.fullscreenElement) {
@@ -1073,28 +1093,28 @@
             var ua = navigator.userAgent.toLowerCase();
             return ua.indexOf('micromessenger') !== -1;
         }
-        
+
         // 显示提示
         function showWeChatTip() {
             var tip = document.getElementById('wechatTip');
             tip.style.display = 'block';
         }
-        
+
         // 关闭提示
-        document.getElementById('closeTip').addEventListener('click', function(e) {
+        document.getElementById('closeTip').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('wechatTip').style.display = 'none';
         });
-        
+
         // 页面加载时检测
-        window.onload = function() {
+        window.onload = function () {
             if (isWeChatBrowser()) {
                 showWeChatTip();
             }
         };
-        
+
         // 或者DOM加载完成后立即检测
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (isWeChatBrowser()) {
                 showWeChatTip();
             }
@@ -1103,10 +1123,10 @@
         // 检测屏幕方向
         function checkOrientation() {
             const tip = document.getElementById('orientationTip');
-            
+
             // 方法1: 使用CSS媒体查询检测
             const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-            
+
             // 方法2: 使用window.orientation或screen.orientation (更可靠)
             let isPortraitAlt = true;
             if (window.orientation !== undefined) {
@@ -1116,7 +1136,7 @@
                 // 现代浏览器
                 isPortraitAlt = screen.orientation.type.includes('portrait');
             }
-            
+
             // 如果检测到竖屏，显示提示
             if (isPortrait && isPortraitAlt) {
                 tip.style.display = 'flex';
@@ -1124,23 +1144,23 @@
                 tip.style.display = 'none';
             }
 
-            
+
             document.querySelector('.help').style.display = 'block';
             setTimeout(() => {
                 document.querySelector('.help').style.display = 'none';
             }, 5000);
 
         }
-        
+
         // 初始检测
         checkOrientation();
-        
+
         // 添加方向变化监听
         window.addEventListener('orientationchange', checkOrientation);
-        
+
         // 某些设备可能需要resize事件
         window.addEventListener('resize', checkOrientation);
-        
+
         // 兼容性处理
         if (screen.orientation) {
             screen.orientation.addEventListener('change', checkOrientation);
@@ -1148,4 +1168,5 @@
 
     </script>
 </body>
+
 </html>

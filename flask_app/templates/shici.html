@@ -4,9 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汉字拼图</title>
+    <title>诗词拼图</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
     <style>
+        @font-face {
+            font-family: 'MyKaiTi';
+            src:
+                local('KaiTi'),
+                /* 优先使用系统自带楷体 */
+                local('楷体'),
+                /* url('fonts/kaiti.woff2') format('woff2'), */
+                /* 推荐使用 woff2 格式 */
+                url('/data/STKAITI.TTF') format('truetype');
+            /* 备用TTF格式 */
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -23,6 +41,9 @@
             color: #333;
             /* padding: 10px; */
             text-align: center;
+            font-size: large;
+            /* 楷体 */
+            font: 2em 'MyKaiTi', 'KaiTi', '楷体', '楷体_GB2312', 'SimKai', 'STKaiti', serif;
             /* border-bottom: 1px solid #ddd; */
             z-index: 9999;
             /* 确保在最上层 */
@@ -240,7 +261,7 @@
         }
 
         .target-slot.correct {
-            border: none; 
+            border: none;
             /* background: rgba(76, 255, 0, 0.15);
             box-shadow: 0 0 20px rgba(76, 255, 0, 0.4); */
         }
@@ -800,6 +821,11 @@
                 gameData = await fetch(`/shici_splited/${sc}/components_info.json`).then(res => res.json());
                 console.log(candidates, sc, gameData);
 
+                if (randomItem['type'] == '纳兰性德') {
+                    document.getElementById('banner').innerHTML = `${randomItem['type']}  --  ${randomItem['title']}`;
+                } else {
+                    document.getElementById('banner').innerHTML = `${randomItem['type']}  --  ${randomItem['title']}  --  ${randomItem['author']}`;
+                }
 
                 // 创建目标位置
                 gameData.components.forEach((component, index) => {
@@ -1046,7 +1072,7 @@
                     gameComplete();
                 }
 
-                if( beforeCount === gameState.completed) {
+                if (beforeCount === gameState.completed) {
                     btnReset.click();
                 }
             });
