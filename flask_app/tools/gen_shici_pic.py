@@ -95,8 +95,8 @@ if __name__ == "__main__":
             sc['content'], 
             output_file, 
             font_path, 
-            font_size=60, 
-            line_spacing=20, 
+            font_size=120, 
+            line_spacing=40, 
             text_color=(0, 0, 0), 
             background_color=(255, 255, 255)
         ):

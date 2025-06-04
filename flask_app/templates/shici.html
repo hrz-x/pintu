@@ -59,8 +59,8 @@
         .container {
             /* max-width: 900px; */
             width: 100%;
-            background: rgba(255, 255, 255, 0.0);
-            backdrop-filter: blur(10px);
+            /* background: rgba(255, 255, 255, 0.0);
+            backdrop-filter: blur(10px); */
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.0);
@@ -88,8 +88,9 @@
         .game-area {
             display: flex;
             flex-wrap: wrap;
-            padding: 30px;
-            gap: 30px;
+            /* padding: 30px; */
+            gap: 10px;
+            flex-direction: column;
         }
 
         .target-area {
@@ -98,7 +99,7 @@
             /* background: rgba(0, 0, 0, 0.15); */
             /* border: 2px dashed rgba(0, 0, 0, 0.4); */
             border-radius: 15px;
-            padding: 20px;
+            /* padding: 20px; */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -130,7 +131,7 @@
             /* width: 200px; */
             /* background: rgba(0, 0, 0, 0.15); */
             border-radius: 15px;
-            padding: 20px;
+            /* padding: 20px; */
             display: flex;
             /* flex-direction: column; */
         }
@@ -148,17 +149,17 @@
             flex-wrap: wrap;
             /* flex-direction: column; */
             /* width: 200px; */
-            gap: 20px;
+            gap: 10px;
             justify-content: center;
         }
 
         .puzzle-piece {
-            height: 100px;
+            /* height: 100px; */
             background: rgba(255, 255, 255, 0.0);
             border-radius: 10px;
             display: flex;
             align-items: center;
-            padding: 10px;
+            /* padding: 10px; */
             cursor: grab;
             transition: all 0.3s ease;
             position: relative;
@@ -239,9 +240,9 @@
         }
 
         .target-slot.correct {
-            border: 2px solid #4cff00;
-            background: rgba(76, 255, 0, 0.15);
-            box-shadow: 0 0 20px rgba(76, 255, 0, 0.4);
+            border: none; 
+            /* background: rgba(76, 255, 0, 0.15);
+            box-shadow: 0 0 20px rgba(76, 255, 0, 0.4); */
         }
 
         .target-slot.correct::after {
@@ -655,8 +656,7 @@
     </div>
 
     <div class="top-banner" id="banner"></div>
-    <div class="help">拖动左侧拼图至右侧区域来组成汉字<br>Drag the puzzle pieces on the left to the right area to form Chinese
-        characters</div>
+    <div class="help"></div>
     <!-- 全屏按钮 -->
     <button id="fullscreen-btn" title="切换全屏">⛶ 全屏</button>
     <button id="btn-solve">
@@ -808,7 +808,7 @@
                     slot.dataset.index = index;
 
                     // 设置位置和尺寸（按比例缩小以适应容器）
-                    const scale = 1;
+                    const scale = 0.4;
                     slot.style.width = `${component.size.width * scale}px`;
                     slot.style.height = `${component.size.height * scale}px`;
                     slot.style.left = `${component.bbox.x * scale}px`;
@@ -845,9 +845,14 @@
                     });
                 });
 
+                // 调整 puzzle-target 宽高
+                document.querySelector('.puzzle-target').style.setProperty('max-width', `${gameData.original_size.width * 0.4}px`);
+                document.querySelector('.puzzle-target').style.height = `${gameData.original_size.height * 0.4}px`;
+
                 // 添加事件监听器
                 addEventListeners();
 
+                btnSolve.click();
             }
 
             // 更新计时器
@@ -988,12 +993,14 @@
             }
 
             btnSolve.addEventListener('click', () => {
+                let beforeCount = gameState.completed;
+
                 // 创建一个副本数组，因为我们要修改原始数组
                 let piecesToProcess = [...gameState.pieces];
                 console.log(piecesToProcess)
 
                 piecesToProcess.forEach(piece => {
-                    if (Math.random() < 0.5) return; // 随机跳过一些拼图块
+                    if (Math.random() < 0.5 && !(piece.width < 40 || piece.height < 40)) return; // 随机跳过一些拼图块
 
                     const slot = gameState.slots[piece.index];
                     if (!slot) {
@@ -1038,10 +1045,16 @@
                 if (gameState.completed === gameData.components.length) {
                     gameComplete();
                 }
+
+                if( beforeCount === gameState.completed) {
+                    btnReset.click();
+                }
             });
             // 游戏完成
             function gameComplete() {
-                initGame();
+                setTimeout(() => {
+                    initGame();
+                }, 1000);
             }
 
             btnReset.addEventListener('click', () => {

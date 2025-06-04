@@ -1,3 +1,4 @@
+from collections import Counter
 import json
 import os
 from pprint import pprint
@@ -84,16 +85,29 @@ if __name__ == "__main__":
     for sj in shijing:
         sj['author'] = sj['chapter'] + '-' + sj['section']
         sj['type'] = '诗经'
-    shijing = [sj for sj in shijing if len(''.join(sj['content'])) < 100]
     shuimotangshi = loader.body_extractor("shuimotangshi")
     for smts in shuimotangshi:
         smts['type'] = '水墨唐诗'
         smts['content'] = smts['paragraphs']
         del smts['paragraphs']
-    shuimotangshi = [smts for smts in shuimotangshi if len(''.join(smts['content'])) < 100]
+    nalanxingde = loader.body_extractor("nalanxingde")
+    for nxd in nalanxingde:
+        nxd['type'] = '纳兰性德'
+        nxd['content'] = nxd['para']
+        del nxd['para']
+    songci = json.load(open(POETRY_DATA_DIR + '/宋词/宋词三百首.json'))
+    for sc in songci:
+        sc['type'] = '宋词'
+        sc['title'] = sc['rhythmic']
+        sc['content'] = sc['paragraphs']
+        del sc['paragraphs']
 
-    all_poetrys = shijing + shuimotangshi
+    all_poetrys = shijing + shuimotangshi + random.choices(nalanxingde, k=100) + songci
+    all_poetrys = [poem for poem in all_poetrys if len(''.join(poem['content'])) <= 60]
+    all_poetrys = [poem for poem in all_poetrys if max([len(e) for e in poem['content']]) <= 20]
+
     print(f"共计 {len(all_poetrys)} 首诗歌。")
+    print(Counter(poem['type'] for poem in all_poetrys))
     json.dump(
         all_poetrys,
         open("./data/shici.json", "w", encoding="utf-8"),
