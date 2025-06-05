@@ -1,11 +1,16 @@
 import json
 import os
 from http import HTTPStatus
+from io import BytesIO
+from typing import List, Optional
 
+import cv2
 import dashscope
+import numpy as np
 import requests
 from dashscope import ImageSynthesis, VideoSynthesis
 from openai import OpenAI
+from PIL import Image
 
 dashscope.api_key = os.getenv("DASHSCOPE_API_KEY")
 
@@ -93,15 +98,6 @@ prompt_v2 = "请以“{zi}”字展开一副画像，描述画面内容。"
 prompt_v3 = (
     "请以“{zi}”字展开一副画像，描述画面内容，画面主体应当为“{zi}”，增加适当的修饰元素。"
 )
-
-import os
-from io import BytesIO
-from typing import List, Optional
-
-import cv2
-import numpy as np
-import requests
-from PIL import Image
 
 
 def convert_to_browser_friendly(input_path, output_path):
@@ -234,8 +230,6 @@ def create_fade_video(
             convert_to_browser_friendly(temp_path, output_path)
             os.remove(temp_path)
 
-        return output_path
-        print(f"视频生成成功: {os.path.abspath(output_path)}")
         return output_path
 
     finally:

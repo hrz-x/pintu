@@ -66,6 +66,10 @@
         }
 
         body {
+            background-image: url('/data/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             margin-top: 50px;
             /* 为固定条留出空间，防止内容被遮挡 */
             /* background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); */
@@ -75,6 +79,24 @@
             align-items: center;
             padding: 20px;
             color: #fff;
+        }
+
+        /* 初始覆盖层（半透明白色） */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            transition: background 2s ease-in-out;
+            /* 过渡动画 */
+        }
+
+        /* 触发后，覆盖层变为透明 */
+        body.fade-in::before {
+            background: rgba(255, 255, 255, 0);
         }
 
         .container {
@@ -488,7 +510,7 @@
 
         #btn-solve {
             position: fixed;
-            top: 80px;
+            bottom: 20px;
             left: 20px;
             width: 80px;
             height: 40px;
@@ -506,6 +528,30 @@
         }
 
         #btn-solve:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        #next-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+            border-radius: 10%;
+            color: rgb(15, 181, 247);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #next-btn:hover {
             background-color: rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
@@ -649,13 +695,7 @@
     </style>
 </head>
 
-<body style="
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                      url('/data/bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-">
+<body>
     <!-- 微信提示弹窗 -->
     <div id="wechatTip" class="wechat-tip">
         <div class="wechat-tip-content">
@@ -681,6 +721,9 @@
     <button id="fullscreen-btn" title="切换全屏">⛶ 全屏</button>
     <button id="btn-solve">
         <i class="fas fa-lightbulb"></i> &nbsp;提示
+    </button>
+    <button id="next-btn">
+        下一首
     </button>
     <div class="container">
 
@@ -774,7 +817,7 @@
                 elapsedTime: 0
             };
 
-            const candidates = (await fetch('/data/shici_available.json').then(res => res.json())).sort(() => Math.random() - 0.5);
+            const candidates = (await fetch('/data/shici_final.json').then(res => res.json())).sort(() => Math.random() - 0.5);
             let gameData = null;
             let sc = '';
             let idx = 0;
@@ -816,6 +859,10 @@
                 // 获取文字数据
                 let randomItem = candidates[(idx++) % candidates.length];
                 sc = randomItem['title'] + '_' + randomItem['author'];
+
+                // 修改body的背景图片
+                document.body.style.backgroundImage = `url('/shici_bg/${sc}.png'`;
+                document.body.classList.remove('fade-in');
 
                 gameData = await fetch(`/shici_splited/${sc}/components_info.json`).then(res => res.json());
                 console.log(candidates, sc, gameData);
@@ -879,6 +926,10 @@
 
                 btnSolve.click();
             }
+
+            document.getElementById('next-btn').addEventListener('click', () => {
+                initGame();
+            });
 
             // 更新计时器
             function updateTimer() {
@@ -1072,14 +1123,18 @@
                 }
 
                 if (beforeCount === gameState.completed) {
-                    btnReset.click();
+                    btnSolve.click();
                 }
             });
             // 游戏完成
             function gameComplete() {
-                setTimeout(() => {
-                    initGame();
-                }, 1000);
+                // 隐藏 puzzle-target，动画效果
+                puzzleTarget.style.transition = 'opacity 1s ease';
+                puzzleTarget.style.opacity = '0';
+
+                // 将body背景取消透明度，动画效果过渡来实现
+                document.body.classList.add("fade-in");
+
             }
 
             btnReset.addEventListener('click', () => {

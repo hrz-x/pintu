@@ -47,6 +47,11 @@ def shici_splited(filename):
     return send_from_directory(pintu_dir + "/data/shici_splited/", filename)
 
 
+@app.route("/shici_bg/<filename>")
+def shici_bg(filename):
+    return send_from_directory(pintu_dir + "/data/shici_bg/", filename)
+
+
 @app.route("/hanzi_video/<filename>")
 def hanzi_video(filename):
     return send_from_directory(pintu_dir + "/data/hanzi_video/", filename)
