@@ -89,7 +89,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.8);
             transition: background 2s ease-in-out;
             /* 过渡动画 */
         }
@@ -555,6 +555,32 @@
             background-color: rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
+        #comment {
+            position: fixed;  /* 固定定位，覆盖整个视口 */
+            /* top: 0;
+            bottom: 0;  */
+            right: 20px;
+            max-height: 90%;
+            overflow-y: auto;  
+            
+            /* Flex 居中关键代码 */
+            display: flex;
+            justify-content: center;  /* 水平居中 */
+            align-items: center;      /* 垂直居中 */
+            
+            /* 半透明白背景 */
+            background-color: rgba(255, 255, 255, 0.7);
+            /* 设置圆弧背景 */
+            border-radius: 20px;
+            font: 1.5em 'MyKaiTi', 'KaiTi', '楷体', '楷体_GB2312', 'SimKai', 'STKaiti', serif;
+            /* 设置字体背景 */
+            
+            /* 确保在最上层 */
+            z-index: -1;
+
+            transition: opacity 2s ease-in-out;
+        }
+
 
         /* 页面内容样式 */
         .content {
@@ -697,6 +723,7 @@
 
 <body>
     <!-- 微信提示弹窗 -->
+    <div id="comment"></div>
     <div id="wechatTip" class="wechat-tip">
         <div class="wechat-tip-content">
             <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信" class="wechat-tip-logo">
@@ -805,6 +832,7 @@
             const timerDisplay = document.getElementById('timer');
             const finalTime = document.getElementById('final-time');
             const finalMoves = document.getElementById('final-moves');
+            const comment = document.getElementById('comment');
 
             // 游戏状态
             let gameState = {
@@ -825,6 +853,16 @@
 
             // 初始化游戏
             async function initGame() {
+                
+                // 修改body的背景图片
+                comment.style.opacity = '0';
+                comment.style.transition = 'none';
+                puzzleTarget.style.opacity = '1';
+                puzzleTarget.style.transition = 'opacity 0s ease';
+                document.body.classList.remove('fade-in');
+
+                
+
                 // 清除现有状态
                 piecesContainer.innerHTML = '';
                 gameState.pieces = [];
@@ -860,9 +898,9 @@
                 let randomItem = candidates[(idx++) % candidates.length];
                 sc = randomItem['title'] + '_' + randomItem['author'];
 
-                // 修改body的背景图片
+                comment.innerHTML = `${randomItem['comment'].replaceAll('\n', '<br>')}`;
+
                 document.body.style.backgroundImage = `url('/shici_bg/${sc}.png'`;
-                document.body.classList.remove('fade-in');
 
                 gameData = await fetch(`/shici_splited/${sc}/components_info.json`).then(res => res.json());
                 console.log(candidates, sc, gameData);
@@ -1073,7 +1111,6 @@
 
                 // 创建一个副本数组，因为我们要修改原始数组
                 let piecesToProcess = [...gameState.pieces];
-                console.log(piecesToProcess)
 
                 piecesToProcess.forEach(piece => {
                     if (Math.random() < 0.5 && !(piece.width < 40 || piece.height < 40)) return; // 随机跳过一些拼图块
@@ -1135,6 +1172,11 @@
                 // 将body背景取消透明度，动画效果过渡来实现
                 document.body.classList.add("fade-in");
 
+                setTimeout(() => {
+                    // 让 comment 从上到下浮现出来
+                    comment.style.transition = 'opacity 2s ease-in-out';
+                    comment.style.opacity = '1';
+                }, 2000);
             }
 
             btnReset.addEventListener('click', () => {
