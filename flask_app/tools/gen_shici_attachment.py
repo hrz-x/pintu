@@ -72,7 +72,7 @@ if __name__ == "__main__":
     if os.path.exists("./data/shici_final.json"):
         # 如果存在 shici_final.json，则读取已有数据
         shici_final = json.load(open("./data/shici_final.json", "r", encoding="utf-8"))
-    for sc in random.sample(shici, k=20):
+    for sc in random.sample(shici, k=100):
         if sc["title"] in [s["title"] for s in shici_final]:
             print(f"诗词 {sc['title']} 已经存在，跳过")
             continue
@@ -92,3 +92,4 @@ if __name__ == "__main__":
             indent=2,
         )
     print("生成诗词背景图片成功，保存在 ./data/shici_bg/ 目录下")
+    print("已有诗词数量：%s" % len(shici_final))
