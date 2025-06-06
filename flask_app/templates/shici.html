@@ -89,7 +89,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5);
             transition: background 2s ease-in-out;
             /* 过渡动画 */
         }
@@ -158,7 +158,7 @@
 
         .puzzle-target {
             flex: 1;
-            background: rgba(0, 0, 0, 0.0);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 10px;
             position: relative;
             height: 400px;
@@ -198,7 +198,7 @@
 
         .puzzle-piece {
             /* height: 100px; */
-            background: rgba(255, 255, 255, 0.0);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -555,36 +555,71 @@
             background-color: rgba(0, 0, 0, 0.5);
             transform: scale(1.1);
         }
+
         #comment {
-            position: fixed;  /* 固定定位，覆盖整个视口 */
+            position: fixed;
+            /* 固定定位，覆盖整个视口 */
             /* top: 0;
             bottom: 0;  */
             right: 20px;
             max-height: 90%;
-            overflow-y: auto;  
+            overflow-y: auto;
             padding: 5px;
-            
+
             /* Flex 居中关键代码 */
             display: flex;
-            justify-content: center;  /* 水平居中 */
-            align-items: center;      /* 垂直居中 */
-            
+            justify-content: center;
+            /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+
             /* 半透明白背景 */
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.6);
             /* 设置圆弧背景 */
             border-radius: 20px;
             font: 1.5em 'MyKaiTi', 'KaiTi', '楷体', '楷体_GB2312', 'SimKai', 'STKaiti', serif;
             /* 设置字体背景 */
-            
+
             /* 确保在最上层 */
-            z-index: -1;
+            z-index: 0;
 
 
             /* 内容透明度渐变 */
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
         }
 
+        /* 最小化状态 */
+        #comment.minimized {
+            max-height: 34px;
+            max-width: 34px;
+            /* 只显示标题栏的高度 */
+            overflow: hidden;
+        }
+
+        /* 最小化按钮样式 */
+        .minimize-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bolder;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .minimize-btn:hover {
+            background: rgba(0, 0, 0, 1);
+        }
 
         /* 页面内容样式 */
         .content {
@@ -727,7 +762,13 @@
 
 <body>
     <!-- 微信提示弹窗 -->
-    <div id="comment"></div>
+    <div id="comment">
+        <button class="minimize-btn">−</button>
+        <!-- 你的评论内容在这里 -->
+        <div id="comment-content">
+            ...
+        </div>
+    </div>
     <div id="wechatTip" class="wechat-tip">
         <div class="wechat-tip-content">
             <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信" class="wechat-tip-logo">
@@ -817,7 +858,14 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-
+            document.querySelector('.minimize-btn').addEventListener('click', function () {
+                const comment = document.getElementById('comment');
+                comment.classList.toggle('minimized');
+                this.textContent = comment.classList.contains('minimized') ? '+' : '−';
+                if (comment.classList.contains('minimized')) {
+                } else {
+                }
+            });
             document.querySelector('.help').style.display = 'block';
             setTimeout(() => {
                 document.querySelector('.help').style.display = 'none';
@@ -857,15 +905,17 @@
 
             // 初始化游戏
             async function initGame() {
-                
+
                 // 修改body的背景图片
                 comment.style.opacity = '0';
                 comment.style.transition = 'none';
+                comment.style.zIndex = '0';
+
                 puzzleTarget.style.opacity = '1';
                 puzzleTarget.style.transition = 'opacity 0s ease';
                 document.body.classList.remove('fade-in');
 
-                
+
 
                 // 清除现有状态
                 piecesContainer.innerHTML = '';
@@ -902,7 +952,7 @@
                 let randomItem = candidates[(idx++) % candidates.length];
                 sc = randomItem['title'] + '_' + randomItem['author'];
 
-                comment.innerHTML = `${randomItem['comment'].replaceAll('\n', '<br>')}`;
+                document.querySelector('#comment-content').innerHTML = `${randomItem['comment'].replaceAll('\n', '<br>')}`;
 
                 document.body.style.backgroundImage = `url('/shici_bg/${sc}.png'`;
 
@@ -1171,11 +1221,15 @@
             function gameComplete() {
                 // 隐藏 puzzle-target，动画效果
                 puzzleTarget.style.transition = 'opacity 1s ease';
-                puzzleTarget.style.opacity = '0';
+                puzzleTarget.style.opacity = '0.8';
 
                 // 将body背景取消透明度，动画效果过渡来实现
                 document.body.classList.add("fade-in");
 
+                if (document.querySelector('.minimize-btn').innerHTML === '+'){
+                    document.querySelector('.minimize-btn').click();
+                }
+                comment.style.zIndex = '1000';
                 setTimeout(() => {
                     // 让 comment 从上到下浮现出来
                     comment.style.opacity = '1';

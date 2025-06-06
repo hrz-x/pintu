@@ -6,6 +6,7 @@ from http import HTTPStatus
 import requests
 from dashscope import ImageSynthesis
 from openai import OpenAI
+from tqdm import tqdm
 
 
 def qa(question: str) -> str:
@@ -64,6 +65,24 @@ def wanx_t2i(prompt: str, output_path: str) -> None:
         )
 
 
+def filter():
+    """过滤掉重复字太多的诗词"""
+    shici_final = json.load(open("./data/shici_final.json", "r", encoding="utf-8"))
+    res = []
+    for sc in shici_final:
+        content = "".join(sc["content"])
+        if len(set(content)) / len(content) < 0.4:
+            print(f"过滤掉重复字太多的诗词：{sc['title']} - {sc['author']}")
+            continue
+        res.append(sc)
+    json.dump(
+        res,
+        open("./data/shici_final.json", "w", encoding="utf-8"),
+        ensure_ascii=False,
+        indent=2,
+    )
+
+
 if __name__ == "__main__":
 
     shici = json.load(open("./data/shici_available.json", "r", encoding="utf-8"))
@@ -72,7 +91,7 @@ if __name__ == "__main__":
     if os.path.exists("./data/shici_final.json"):
         # 如果存在 shici_final.json，则读取已有数据
         shici_final = json.load(open("./data/shici_final.json", "r", encoding="utf-8"))
-    for sc in random.sample(shici, k=100):
+    for sc in tqdm(shici):
         if sc["title"] in [s["title"] for s in shici_final]:
             print(f"诗词 {sc['title']} 已经存在，跳过")
             continue
